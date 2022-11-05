@@ -1,6 +1,8 @@
-const FPS = 120;
+const FPS = 60;
 const HEIGHT = window.innerHeight * 0.75;
 const WIDTH = HEIGHT;
+const HEAT_SOURCE_POWER = 5000;
+const HEAT_SOURCE_RADIUS = 5;
 
 let scene = new THREE.Scene();
 let camera = new THREE.OrthographicCamera(WIDTH / -2, WIDTH / 2, HEIGHT / 2, HEIGHT / -2, 1, 1000);
@@ -13,21 +15,23 @@ let mouse = new THREE.Vector2();
 let enTrainDajouterDesTrous = false;
 let draging = false;
 
+// Initialize temperature matrix
+let tempMatrix = initMatrix();
+let size = math.size(tempMatrix);
+
 // Heat source
-let geometryHeatSource = new THREE.CircleGeometry(5, 32);
+let heatSources = [];
+let geometryHeatSource = new THREE.CircleGeometry(HEAT_SOURCE_RADIUS);
 let materialHeatSource = new THREE.MeshBasicMaterial({ color: 0xffff00 });
-let heatSource = createHeatSource();
-scene.add(heatSource);
+createHeatSource(50, 50, HEAT_SOURCE_POWER);
+createHeatSource(5, 5, HEAT_SOURCE_POWER);
+createHeatSource(80, 5, 500);
 
 // Setting up threejs
 let element = document.body.getElementsByClassName('three-js');
 element[0].appendChild(renderer.domElement);
 renderer.setSize(WIDTH, HEIGHT);
 camera.position.z = 2;
-
-// Initialize temperature matrix
-let tempMatrix = initMatrix();
-let size = math.size(tempMatrix);
 
 let cube = null;
 let delta = 0;
@@ -39,7 +43,7 @@ var update = function () {
     if (delta > 1 / FPS) {
         delta = delta % (1 / FPS);
 
-        tempMatrix = compute(tempMatrix);
+        tempMatrix = compute(tempMatrix, heatSources);
         var textureResult = convertTemperatureMatrixToTexture(tempMatrix);
 
         if (cube != null) scene.remove(cube);
@@ -94,17 +98,37 @@ function createHole(e) {
     tempMatrix[pos[0]][pos[1]] = -1;
 }
 
-function createHeatSource() {
+function createHeatSource(i, j, heat) {
     var circle = new THREE.Mesh(geometryHeatSource, materialHeatSource);
+    let pos = getWorldPosFromMatrixPos(i, j);
+    circle.position.x = pos[0] + HEAT_SOURCE_RADIUS / 2;
+    circle.position.y = pos[1] - HEAT_SOURCE_RADIUS / 2;
     circle.position.z = 1;
+    scene.add(circle);
+
+    console.log(circle.position);
+
+    heatSources.push({
+        i: i,
+        j: j,
+        heat: heat,
+    });
 
     return circle;
+}
+
+function getWorldPosFromMatrixPos(i, j) {
+    let stretchX = WIDTH / size[0];
+    let stretchY = HEIGHT / size[1];
+
+    return [j * stretchX - WIDTH / 2, -(i * stretchY - HEIGHT / 2)];
 }
 
 function getMatrixPosFromMousePos(e) {
     let rect = e.target.getBoundingClientRect();
     let x = e.clientX - rect.left;
     let y = e.clientY - rect.top;
+    console.log(x, y);
 
     let stretchX = WIDTH / size[0];
     let stretchY = HEIGHT / size[1];

@@ -50,13 +50,6 @@ function diffusionStep(matrix, diffusionCoeff, deltaX) {
 function initMatrix() {
     var length = 100;
     var bigTestArray = math.zeros([length, length]);
-    bigTestArray[50][50] = 1473;
-    bigTestArray[53][53] = 1473;
-    bigTestArray[52][51] = 50073;
-    bigTestArray[5][5] = 50073;
-    bigTestArray[7][7] = -1;
-    bigTestArray[6][6] = -1;
-    bigTestArray[8][9] = -1;
 
     for (let i = 0; i < length; i++) {
         bigTestArray[0][i] = -1;
@@ -71,6 +64,12 @@ function initMatrix() {
     return bigTestArray;
 }
 
-function compute(oldStep) {
+function compute(oldStep, heatSources) {
+    for (let i = 0; i < heatSources.length; i++) {
+        if (oldStep[heatSources[i].i][heatSources[i].j] === -1) continue;
+
+        oldStep[heatSources[i].i][heatSources[i].j] += heatSources[i].heat;
+    }
+
     return diffusionStep(oldStep, 165 * 10 ** -6, 0.0001);
 }
