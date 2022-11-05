@@ -13,16 +13,6 @@ diffusion: m2/s
 
 */
 
-function appendOutput(strToOutput) {
-    document.getElementById("output").innerHTML = document.getElementById("output").innerHTML + strToOutput;
-}
-
-function clearOutput() {
-    document.getElementById("output").innerHTML = "";
-}
-
-
-
 
 function createEmptyArray(yLength){
 
@@ -74,16 +64,9 @@ function diffusionStep(matrix,diffusionCoeff,deltaX,deltaY,deltaTime){
 
 
 var bigTestArray = math.zeros([100,100]);
-
-
-
 bigTestArray[50][50] = 1473;
 
-
-
-
-for (let i =0; i<5000;i++){
-    
-    bigTestArray = diffusionStep(bigTestArray,10**-11,0.0001,0.0001,0.001);
+for (let i =0; i<500;i++){
+    bigTestArray = diffusionStep(bigTestArray,500*10**-10,0.0001,0.0001,0.001);
     console.log(bigTestArray);
 }
