@@ -11,6 +11,7 @@ let mouse = new THREE.Vector2();
 
 // Ajout de trous actif
 let enTrainDajouterDesTrous = false;
+let draging = false;
 
 // Heat source
 let geometryHeatSource = new THREE.CircleGeometry(5, 32);
@@ -88,6 +89,11 @@ function convertTemperatureMatrixToTexture(tempMatrix) {
     return texture;
 }
 
+function createHole(e) {
+    let pos = getMatrixPosFromMousePos(e);
+    tempMatrix[pos[1]][pos[0]] = -1;
+}
+
 function createHeatSource() {
     var circle = new THREE.Mesh(geometryHeatSource, materialHeatSource);
     circle.position.z = 1;
@@ -119,6 +125,21 @@ renderer.domElement.addEventListener('click', (e) => {
     let mousePos = getMatrixPosFromMousePos(e);
     console.log(mousePos);
     tempMatrix[mousePos[1]][mousePos[0]] = -1;
+});
+
+renderer.domElement.addEventListener('mousedown', (e) => {
+    draging = true;
+});
+
+renderer.domElement.addEventListener('mouseup', (e) => {
+    draging = false;
+});
+
+renderer.domElement.addEventListener('mousemove', (e) => {
+    if (enTrainDajouterDesTrous) {
+        createHole(e);
+        console.log('dragging');
+    }
 });
 
 // Toggle trous
