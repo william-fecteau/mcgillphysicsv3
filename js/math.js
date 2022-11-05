@@ -24,14 +24,6 @@ function clearOutput() {
 
 
 
-
-var matrix = ([1, 4, 9, 16, 25]);
-var A = [[1,2,3],[2,5,6]];
-var zgu = math.size(A);
-console.log(math.size(matrix));
-//appendOutput("Hello World! " + idk + " " + zgu);
-
-
 function createEmptyArray(yLength){
 
     var newMatrix = [];
@@ -79,18 +71,14 @@ function diffusionStep(matrix,diffusionCoeff,deltaX,deltaY,deltaTime){
 
 
 
-var testArray = [[0,0,0,0],[0,200,0,0],[0,0,0,0],[0,0,0,0]];
-console.log(math.size(testArray)[0])
-console.log(math.size(testArray)[1])
-console.log(diffusionStep(testArray,10**-15,1,1,1));
+
 
 var bigTestArray = math.zeros([100,100]);
 
-//appendOutput(bigTestArray);
+
 
 bigTestArray[50][50] = 1473;
 
-appendOutput(bigTestArray);
 
 
 
