@@ -29,16 +29,54 @@
     </head>
     <body>
         <div class="three-js"></div>
-        <div class="menuwu">
-            <button id="trou" type="button" class="btn btn-dark btn-style" data-bs-toggle="button">
-                Ajouter des trous
-            </button>
-            <button type="button" class="btn btn-dark btn-style">UwU</button>
-            <select class="form-select bg-dark text-white select-style">
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
-            </select>
+        <div class="menuwu col">
+            <div class="row">
+                <button
+                    id="trou"
+                    type="button"
+                    class="btn btn-dark btn-style col"
+                    data-bs-toggle="button"
+                >
+                    Ajouter des trous
+                </button>
+                <!-- <button type="button" class="btn btn-dark btn-style row">UwU</button> -->
+                <select class="form-select bg-dark text-white select-style col">
+                    <option value="" disabled selected hidden>Materiaux</option>
+                    <option value="2">One</option>
+                    <option value="3">Two</option>
+                    <option value="4">Three</option>
+                </select>
+            </div>
+            <div class="row">
+                <input
+                    type="radio"
+                    class="btn-check col"
+                    name="options-outlined"
+                    id="trous"
+                    complete="off"
+                    checked
+                />
+                <label class="btn btn-dark btn-style col" for="trous">Ajouter des trous</label>
+
+                <input
+                    type="radio"
+                    class="btn-check col"
+                    name="options-outlined"
+                    id="source"
+                    autocomplete="off"
+                />
+                <label class="btn btn-dark btn-style col" for="source"
+                    >Ajouter des sources de chaleur</label
+                >
+                <input
+                    type="radio"
+                    class="btn-check col"
+                    name="options-outlined"
+                    id="rien"
+                    autocomplete="off"
+                />
+                <label class="btn btn-dark btn-style col" for="rien">rien</label>
+            </div>
         </div>
 
         <script src="./js//math.js"></script>

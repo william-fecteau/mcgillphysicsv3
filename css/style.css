@@ -13,24 +13,28 @@ canvas {
 }
 
 .three-js {
-    width: 100%;
+    border-radius: 25px;
+    background-color: rgb(63, 63, 63);
+    margin: 10px;
+    padding: 10px;
+    /* width: 50%; */
+    /* transform: translate(50%, 0); */
 }
 
 .menuwu {
     border-radius: 25px;
     background-color: rgb(63, 63, 63);
     margin: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    /* width: 50%; */
+    /* transform: translate(50%, 0); */
 }
 
 .btn-style {
-    width: 200px;
+    width: 100px;
     margin: 3px;
 }
 
 .select-style {
-    width: 100px !important;
+    width: 300px !important;
     margin: 3px;
 }
