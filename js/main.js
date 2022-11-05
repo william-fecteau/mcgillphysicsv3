@@ -1,4 +1,4 @@
-const FPS = 60;
+const FPS = 120;
 const HEIGHT = window.innerHeight * 0.75;
 const WIDTH = HEIGHT;
 
