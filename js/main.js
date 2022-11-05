@@ -37,15 +37,6 @@ function convertTemperatureMatrixToTexture(tempMatrix) {
     return texture;
 }
 
-var testData = [
-    [9, 9, 9, 9, 9],
-    [99, 99, 99, 99, 99],
-    [149, 149, 149, 149, 149],
-    [199, 199, 199, 199, 199],
-    [200, 200, 200, 200, 200],
-];
-var tempTexture = convertTemperatureMatrixToTexture(testData);
-
 var scene = new THREE.Scene();
 var camera = new THREE.OrthographicCamera(WIDTH / -2, WIDTH / 2, HEIGHT / 2, HEIGHT / -2, 1, 1000);
 camera.position.z = 1;
@@ -58,15 +49,23 @@ element[0].appendChild(renderer.domElement);
 
 createMenu();
 
-var geometry = new THREE.BoxGeometry(WIDTH, HEIGHT, 0);
-var material = new THREE.MeshBasicMaterial({
-    map: tempTexture,
-});
-var cube = new THREE.Mesh(geometry, material);
-scene.add(cube);
+var cube = null;
 
 var animate = function () {
     requestAnimationFrame(animate);
+
+    tempMatrix = compute();
+
+    var textureResult = convertTemperatureMatrixToTexture(tempMatrix);
+
+    if (cube != null) scene.remove(cube);
+
+    var geometry = new THREE.BoxGeometry(WIDTH, HEIGHT, 0);
+    var material = new THREE.MeshBasicMaterial({
+        map: textureResult,
+    });
+    cube = new THREE.Mesh(geometry, material);
+    scene.add(cube);
 
     renderer.render(scene, camera);
 };
