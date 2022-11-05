@@ -1,6 +1,6 @@
 const FPS = 60;
-const WIDTH = window.innerWidth;
 const HEIGHT = window.innerHeight * 0.75;
+const WIDTH = HEIGHT;
 
 let scene = new THREE.Scene();
 let camera = new THREE.OrthographicCamera(WIDTH / -2, WIDTH / 2, HEIGHT / 2, HEIGHT / -2, 1, 1000);
@@ -8,6 +8,9 @@ let raycaster = new THREE.Raycaster();
 let renderer = new THREE.WebGLRenderer();
 let clock = new THREE.Clock();
 let mouse = new THREE.Vector2();
+
+// Ajout de trous actif
+let enTrainDajouterDesTrous = false;
 
 // Heat source
 let geometryHeatSource = new THREE.CircleGeometry(5, 32);
@@ -23,6 +26,7 @@ camera.position.z = 2;
 
 // Initialize temperature matrix
 let tempMatrix = initMatrix();
+let size = math.size(tempMatrix);
 
 let cube = null;
 let delta = 0;
@@ -49,12 +53,13 @@ var update = function () {
         renderer.render(scene, camera);
 
         nbUpdate++;
-        console.log(nbUpdate);
+        // console.log(nbUpdate);
     }
 };
 
 function mapTempToColor(temp) {
-    if (temp < 0 || temp < 10) return [7, 42, 108];
+    if (temp < 0) return [0, 0, 0];
+    else if (temp < 10) return [7, 42, 108];
     else if (temp < 100) return [43, 106, 224];
     else if (temp < 150) return [239, 247, 82];
     else if (temp < 200) return [247, 170, 54];
@@ -62,15 +67,11 @@ function mapTempToColor(temp) {
 }
 
 function convertTemperatureMatrixToTexture(tempMatrix) {
-    var sizes = math.size(tempMatrix);
-    var rows = sizes[0];
-    var cols = sizes[1];
-
-    var data = new Uint8Array(4 * rows * cols); // 4* cuz rgba
+    var data = new Uint8Array(4 * size[0] * size[1]); // 4* cuz rgba
 
     var stride = 0;
-    for (var i = 0; i < rows; i++) {
-        for (var j = 0; j < cols; j++) {
+    for (var i = 0; i < size[0]; i++) {
+        for (var j = 0; j < size[1]; j++) {
             var color = mapTempToColor(tempMatrix[i][j]);
 
             data[stride] = color[0];
@@ -82,7 +83,7 @@ function convertTemperatureMatrixToTexture(tempMatrix) {
         }
     }
 
-    var texture = new THREE.DataTexture(data, rows, cols);
+    var texture = new THREE.DataTexture(data, size[0], size[1]);
     texture.needsUpdate = true;
     return texture;
 }
@@ -94,16 +95,34 @@ function createHeatSource() {
     return circle;
 }
 
-update();
+function getMatrixPosFromMousePos(e) {
+    let rect = e.target.getBoundingClientRect();
+    let x = e.clientX - rect.left;
+    let y = e.clientY - rect.top;
+
+    let stretchX = WIDTH / size[0];
+    let stretchY = HEIGHT / size[1];
+
+    return [Math.floor(x / stretchX), Math.floor(y / stretchY)];
+}
 
 // EVENTS
-document.body.addEventListener('click', (event) => {
-    mouse.x = (event.clientX / WIDTH) * 2 - 1;
-    mouse.y = -(event.clientY / HEIGHT) * 2 + 1;
-    raycaster.setFromCamera(mouse, camera);
 
-    circle.position.x = mouse.x;
-    circle.position.y = mouse.y;
+// varible qui contient le state et id du toggler html
+const toggleVarFromButton = (variable, id) => {
+    document.getElementById(id).addEventListener('click', (e) => {
+        variable = !variable;
+    });
+};
 
-    console.log(mouse);
+renderer.domElement.addEventListener('click', (e) => {
+    let mousePos = getMatrixPosFromMousePos(e);
+    console.log(mousePos);
+    tempMatrix[mousePos[1]][mousePos[0]] = -1;
 });
+
+// Toggle trous
+toggleVarFromButton(enTrainDajouterDesTrous, 'trou');
+
+// Start update loop
+update();
