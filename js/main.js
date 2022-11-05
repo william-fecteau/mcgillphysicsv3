@@ -1,6 +1,5 @@
 const WIDTH = window.innerWidth;
 const HEIGHT = window.innerHeight;
-WIDTH = 32;
 
 var scene = new THREE.Scene();
 var camera = new THREE.OrthographicCamera(WIDTH / -2, WIDTH / 2, HEIGHT / 2, HEIGHT / -2, 1, 1000);
