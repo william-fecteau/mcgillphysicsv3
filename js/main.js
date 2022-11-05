@@ -2,7 +2,56 @@ const FPS = 60;
 const WIDTH = window.innerWidth;
 const HEIGHT = window.innerHeight * 0.75;
 
-var raycaster = new THREE.Raycaster();
+let scene = new THREE.Scene();
+let camera = new THREE.OrthographicCamera(WIDTH / -2, WIDTH / 2, HEIGHT / 2, HEIGHT / -2, 1, 1000);
+let raycaster = new THREE.Raycaster();
+let renderer = new THREE.WebGLRenderer();
+let clock = new THREE.Clock();
+let mouse = new THREE.Vector2();
+
+// Heat source
+let geometryHeatSource = new THREE.CircleGeometry(5, 32);
+let materialHeatSource = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+let heatSource = createHeatSource();
+scene.add(heatSource);
+
+// Setting up threejs
+let element = document.body.getElementsByClassName('three-js');
+element[0].appendChild(renderer.domElement);
+renderer.setSize(WIDTH, HEIGHT);
+camera.position.z = 2;
+
+// Initialize temperature matrix
+let tempMatrix = initMatrix();
+
+let cube = null;
+let delta = 0;
+let nbUpdate = 0;
+var update = function () {
+    requestAnimationFrame(update);
+    delta += clock.getDelta();
+
+    if (delta > 1 / FPS) {
+        delta = delta % (1 / FPS);
+
+        tempMatrix = compute(tempMatrix);
+        var textureResult = convertTemperatureMatrixToTexture(tempMatrix);
+
+        if (cube != null) scene.remove(cube);
+
+        var geometry = new THREE.BoxGeometry(WIDTH, HEIGHT, 0);
+        var material = new THREE.MeshBasicMaterial({
+            map: textureResult,
+        });
+        cube = new THREE.Mesh(geometry, material);
+        scene.add(cube);
+
+        renderer.render(scene, camera);
+
+        nbUpdate++;
+        console.log(nbUpdate);
+    }
+};
 
 function mapTempToColor(temp) {
     if (temp < 0 || temp < 10) return [7, 42, 108];
@@ -38,58 +87,16 @@ function convertTemperatureMatrixToTexture(tempMatrix) {
     return texture;
 }
 
-var scene = new THREE.Scene();
-var camera = new THREE.OrthographicCamera(WIDTH / -2, WIDTH / 2, HEIGHT / 2, HEIGHT / -2, 1, 1000);
-camera.position.z = 2;
+function createHeatSource() {
+    var circle = new THREE.Mesh(geometryHeatSource, materialHeatSource);
+    circle.position.z = 1;
 
-var renderer = new THREE.WebGLRenderer();
-renderer.setSize(WIDTH, HEIGHT);
-// append a la div three js
-let element = document.body.getElementsByClassName('three-js');
-element[0].appendChild(renderer.domElement);
-
-var cube = null;
-
-const geometryCircle = new THREE.CircleGeometry(5, 32);
-const materialCircle = new THREE.MeshBasicMaterial({ color: 0xffff00 });
-var circle = new THREE.Mesh(geometryCircle, materialCircle);
-circle.position.z = 1;
-scene.add(circle);
-
-let clock = new THREE.Clock();
-let delta = 0;
-let interval = 1 / FPS;
-let nbUpdate = 0;
-let tempMatrix = initMatrix();
-var update = function () {
-    requestAnimationFrame(update);
-    delta += clock.getDelta();
-
-    if (delta > interval) {
-        delta = delta % interval;
-        nbUpdate++;
-
-        tempMatrix = compute(tempMatrix);
-        var textureResult = convertTemperatureMatrixToTexture(tempMatrix);
-
-        if (cube != null) scene.remove(cube);
-
-        var geometry = new THREE.BoxGeometry(WIDTH, HEIGHT, 0);
-        var material = new THREE.MeshBasicMaterial({
-            map: textureResult,
-        });
-        cube = new THREE.Mesh(geometry, material);
-        scene.add(cube);
-
-        renderer.render(scene, camera);
-        // console.log(nbUpdate);
-        // console.log(tempMatrix);
-    }
-};
+    return circle;
+}
 
 update();
 
-var mouse = new THREE.Vector2();
+// EVENTS
 document.body.addEventListener('click', (event) => {
     mouse.x = (event.clientX / WIDTH) * 2 - 1;
     mouse.y = -(event.clientY / HEIGHT) * 2 + 1;
