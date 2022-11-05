@@ -5,29 +5,32 @@ const loader = new THREE.TextureLoader();
 const texture = loader.load('assets/monke.jpg');
 
 //constants Texture
-const TEXTURE_WIDTH = 512;
-const TEXTURE_HEIGHT = 512;
+const TEXTURE_WIDTH = 4;
+const TEXTURE_HEIGHT = 4;
 const TEXTURE_SIZE = TEXTURE_WIDTH * TEXTURE_HEIGHT;
+var data = new Uint8Array(4 * TEXTURE_SIZE);
 var r, g, b;
+
+var testArray = [1, 2, 3, 4, 4, 3, 2, 1, 1, 2, 3, 4, 4, 3, 2, 1];
 
 //find color
 function colorMap(i) {
-    if (i === 1) {
+    if (testArray[i] === 1) {
         r = 33;
         g = 150;
         b = 243;
     }
-    if (i === 2) {
+    if (testArray[i] === 2) {
         r = 76;
         g = 175;
         b = 80;
     }
-    if (i === 3) {
+    if (testArray[i] === 3) {
         r = 255;
         g = 235;
         b = 59;
     }
-    if (i === 4) {
+    if (testArray[i] === 4) {
         r = 211;
         g = 47;
         b = 47;
@@ -44,9 +47,11 @@ function applyColor() {
         data[stride + 2] = b;
         data[stride + 3] = 255;
     }
+    console.log(data);
 }
-
-var maptexture = new THREE.DataTexture(data, width, height);
+applyColor();
+var mapTexture = new THREE.DataTexture(data, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+mapTexture.needsUpdate = true;
 
 var scene = new THREE.Scene();
 var camera = new THREE.OrthographicCamera(WIDTH / -2, WIDTH / 2, HEIGHT / 2, HEIGHT / -2, 1, 1000);
@@ -58,7 +63,7 @@ document.body.appendChild(renderer.domElement);
 
 var geometry = new THREE.BoxGeometry(WIDTH, HEIGHT, 0);
 var material = new THREE.MeshBasicMaterial({
-    map: texture,
+    map: mapTexture,
 });
 var cube = new THREE.Mesh(geometry, material);
 scene.add(cube);
