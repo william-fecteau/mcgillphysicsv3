@@ -49,7 +49,7 @@ var update = function () {
         renderer.render(scene, camera);
 
         nbUpdate++;
-        console.log(nbUpdate);
+        // console.log(nbUpdate);
     }
 };
 
@@ -94,14 +94,13 @@ function createHeatSource() {
     return circle;
 }
 
-update();
-
 // EVENTS
-document.body.addEventListener('click', (event) => {
-    mouse.x = (event.clientX / WIDTH) * 2 - 1;
-    mouse.y = -(event.clientY / HEIGHT) * 2 + 1;
-    raycaster.setFromCamera(mouse, camera);
-
-    heatSource.position.x = mouse.x;
-    heatSource.position.y = mouse.y;
+renderer.domElement.addEventListener('click', (e) => {
+    var rect = e.target.getBoundingClientRect();
+    var x = e.clientX - rect.left;
+    var y = e.clientY - rect.top;
+    console.log(x, y);
 });
+
+// Start update loop
+update();
