@@ -49,10 +49,13 @@ function diffusionStep(matrix, diffusionCoeff, deltaX, deltaY, deltaTime) {
     return newMatrix;
 }
 
-var bigTestArray = math.zeros([100, 100]);
+function initMatrix() {
+    var bigTestArray = math.zeros([100, 100]);
+    bigTestArray[50][50] = 1473;
 
-bigTestArray[50][50] = 1473;
+    return bigTestArray;
+}
 
-function compute() {
-    return diffusionStep(bigTestArray, 10 ** -4, 0.0001, 0.0001, 0.001);
+function compute(oldStep) {
+    return diffusionStep(oldStep, 500 * 10 ** -10, 0.0001, 0.0001, 0.001);
 }

@@ -1,5 +1,6 @@
 const createMenu = () => {};
 
+const FPS = 60;
 const WIDTH = window.innerWidth;
 const HEIGHT = window.innerHeight * 0.75;
 
@@ -51,23 +52,35 @@ createMenu();
 
 var cube = null;
 
-var animate = function () {
-    requestAnimationFrame(animate);
+let clock = new THREE.Clock();
+let delta = 0;
+let interval = 1 / FPS;
+let nbUpdate = 0;
+let tempMatrix = initMatrix();
+var update = function () {
+    requestAnimationFrame(update);
+    delta += clock.getDelta();
 
-    tempMatrix = compute();
+    if (delta > interval) {
+        delta = delta % interval;
+        nbUpdate++;
 
-    var textureResult = convertTemperatureMatrixToTexture(tempMatrix);
+        tempMatrix = compute(tempMatrix);
+        var textureResult = convertTemperatureMatrixToTexture(tempMatrix);
 
-    if (cube != null) scene.remove(cube);
+        if (cube != null) scene.remove(cube);
 
-    var geometry = new THREE.BoxGeometry(WIDTH, HEIGHT, 0);
-    var material = new THREE.MeshBasicMaterial({
-        map: textureResult,
-    });
-    cube = new THREE.Mesh(geometry, material);
-    scene.add(cube);
+        var geometry = new THREE.BoxGeometry(WIDTH, HEIGHT, 0);
+        var material = new THREE.MeshBasicMaterial({
+            map: textureResult,
+        });
+        cube = new THREE.Mesh(geometry, material);
+        scene.add(cube);
 
-    renderer.render(scene, camera);
+        renderer.render(scene, camera);
+        console.log(nbUpdate);
+        console.log(tempMatrix);
+    }
 };
 
-animate();
+update();
