@@ -1,5 +1,3 @@
-const createMenu = () => {};
-
 const WIDTH = window.innerWidth;
 const HEIGHT = window.innerHeight * 0.75;
 
@@ -61,12 +59,10 @@ camera.position.z = 1;
 
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize(WIDTH, HEIGHT);
+// append a la div three js
 let element = document.body.getElementsByClassName('three-js');
 console.log(element);
 element[0].appendChild(renderer.domElement);
-// document.body.appendChild(renderer.domElement);
-
-createMenu();
 
 var geometry = new THREE.BoxGeometry(WIDTH, HEIGHT, 0);
 var material = new THREE.MeshBasicMaterial({
