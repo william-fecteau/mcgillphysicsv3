@@ -1,6 +1,6 @@
 const FPS = 60;
-const WIDTH = window.innerWidth;
 const HEIGHT = window.innerHeight * 0.75;
+const WIDTH = HEIGHT;
 
 let scene = new THREE.Scene();
 let camera = new THREE.OrthographicCamera(WIDTH / -2, WIDTH / 2, HEIGHT / 2, HEIGHT / -2, 1, 1000);
@@ -49,7 +49,7 @@ var update = function () {
         renderer.render(scene, camera);
 
         nbUpdate++;
-        console.log(nbUpdate);
+        // console.log(nbUpdate);
     }
 };
 
@@ -94,16 +94,13 @@ function createHeatSource() {
     return circle;
 }
 
-update();
-
 // EVENTS
-document.body.addEventListener('click', (event) => {
-    mouse.x = (event.clientX / WIDTH) * 2 - 1;
-    mouse.y = -(event.clientY / HEIGHT) * 2 + 1;
-    raycaster.setFromCamera(mouse, camera);
-
-    circle.position.x = mouse.x;
-    circle.position.y = mouse.y;
-
-    console.log(mouse);
+renderer.domElement.addEventListener('click', (e) => {
+    var rect = e.target.getBoundingClientRect();
+    var x = e.clientX - rect.left;
+    var y = e.clientY - rect.top;
+    console.log(x, y);
 });
+
+// Start update loop
+update();

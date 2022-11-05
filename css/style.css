@@ -6,8 +6,14 @@ body {
     background-color: black !important;
 }
 
+canvas {
+    width: 100%;
+    height: 100%;
+    margin: auto;
+}
+
 .three-js {
-    width: 1vw;
+    width: 100%;
 }
 
 .menuwu {
