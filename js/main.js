@@ -4,6 +4,8 @@ const FPS = 60;
 const WIDTH = window.innerWidth;
 const HEIGHT = window.innerHeight * 0.75;
 
+var raycaster = new THREE.Raycaster();
+
 function mapTempToColor(temp) {
     if (temp < 0 || temp < 10) return [7, 42, 108];
     else if (temp < 100) return [43, 106, 224];
@@ -40,7 +42,7 @@ function convertTemperatureMatrixToTexture(tempMatrix) {
 
 var scene = new THREE.Scene();
 var camera = new THREE.OrthographicCamera(WIDTH / -2, WIDTH / 2, HEIGHT / 2, HEIGHT / -2, 1, 1000);
-camera.position.z = 1;
+camera.position.z = 2;
 
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize(WIDTH, HEIGHT);
@@ -51,6 +53,12 @@ element[0].appendChild(renderer.domElement);
 createMenu();
 
 var cube = null;
+
+const geometryCircle = new THREE.CircleGeometry(5, 32);
+const materialCircle = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+var circle = new THREE.Mesh(geometryCircle, materialCircle);
+circle.position.z = 1;
+scene.add(circle);
 
 let clock = new THREE.Clock();
 let delta = 0;
@@ -78,9 +86,21 @@ var update = function () {
         scene.add(cube);
 
         renderer.render(scene, camera);
-        console.log(nbUpdate);
-        console.log(tempMatrix);
+        // console.log(nbUpdate);
+        // console.log(tempMatrix);
     }
 };
 
 update();
+
+var mouse = new THREE.Vector2();
+document.body.addEventListener('click', (event) => {
+    mouse.x = (event.clientX / WIDTH) * 2 - 1;
+    mouse.y = -(event.clientY / HEIGHT) * 2 + 1;
+    raycaster.setFromCamera(mouse, camera);
+
+    circle.position.x = mouse.x;
+    circle.position.y = mouse.y;
+
+    console.log(mouse);
+});
