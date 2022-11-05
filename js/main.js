@@ -23,6 +23,7 @@ camera.position.z = 2;
 
 // Initialize temperature matrix
 let tempMatrix = initMatrix();
+let size = math.size(tempMatrix);
 
 let cube = null;
 let delta = 0;
@@ -54,7 +55,8 @@ var update = function () {
 };
 
 function mapTempToColor(temp) {
-    if (temp < 0 || temp < 10) return [7, 42, 108];
+    if (temp < 0) return [0, 0, 0];
+    else if (temp < 10) return [7, 42, 108];
     else if (temp < 100) return [43, 106, 224];
     else if (temp < 150) return [239, 247, 82];
     else if (temp < 200) return [247, 170, 54];
@@ -62,15 +64,11 @@ function mapTempToColor(temp) {
 }
 
 function convertTemperatureMatrixToTexture(tempMatrix) {
-    var sizes = math.size(tempMatrix);
-    var rows = sizes[0];
-    var cols = sizes[1];
-
-    var data = new Uint8Array(4 * rows * cols); // 4* cuz rgba
+    var data = new Uint8Array(4 * size[0] * size[1]); // 4* cuz rgba
 
     var stride = 0;
-    for (var i = 0; i < rows; i++) {
-        for (var j = 0; j < cols; j++) {
+    for (var i = 0; i < size[0]; i++) {
+        for (var j = 0; j < size[1]; j++) {
             var color = mapTempToColor(tempMatrix[i][j]);
 
             data[stride] = color[0];
@@ -82,7 +80,7 @@ function convertTemperatureMatrixToTexture(tempMatrix) {
         }
     }
 
-    var texture = new THREE.DataTexture(data, rows, cols);
+    var texture = new THREE.DataTexture(data, size[0], size[1]);
     texture.needsUpdate = true;
     return texture;
 }
@@ -94,12 +92,22 @@ function createHeatSource() {
     return circle;
 }
 
+function getMatrixPosFromMousePos(e) {
+    let rect = e.target.getBoundingClientRect();
+    let x = e.clientX - rect.left;
+    let y = e.clientY - rect.top;
+
+    let stretchX = WIDTH / size[0];
+    let stretchY = HEIGHT / size[1];
+
+    return [Math.floor(x / stretchX), Math.floor(y / stretchY)];
+}
+
 // EVENTS
 renderer.domElement.addEventListener('click', (e) => {
-    var rect = e.target.getBoundingClientRect();
-    var x = e.clientX - rect.left;
-    var y = e.clientY - rect.top;
-    console.log(x, y);
+    let mousePos = getMatrixPosFromMousePos(e);
+    console.log(mousePos);
+    tempMatrix[mousePos[1]][mousePos[0]] = -1;
 });
 
 // Start update loop
