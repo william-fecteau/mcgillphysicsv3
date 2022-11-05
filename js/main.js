@@ -22,3 +22,5 @@ var animate = function () {
 };
 
 animate();
+
+console.log(computeSomethingInteresting());
