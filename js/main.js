@@ -1,4 +1,4 @@
-const FPS = 60;
+const FPS = 120;
 const HEIGHT = window.innerHeight * 0.75;
 const WIDTH = HEIGHT;
 
@@ -91,7 +91,7 @@ function convertTemperatureMatrixToTexture(tempMatrix) {
 
 function createHole(e) {
     let pos = getMatrixPosFromMousePos(e);
-    tempMatrix[pos[1]][pos[0]] = -1;
+    tempMatrix[pos[0]][pos[1]] = -1;
 }
 
 function createHeatSource() {
@@ -136,7 +136,7 @@ renderer.domElement.addEventListener('mouseup', (e) => {
 });
 
 renderer.domElement.addEventListener('mousemove', (e) => {
-    if (enTrainDajouterDesTrous) {
+    if (draging) {
         createHole(e);
         console.log('dragging');
     }
