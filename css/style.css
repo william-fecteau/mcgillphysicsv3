@@ -26,6 +26,11 @@ canvas {
 }
 
 .btn-style {
-    width: 100px;
+    width: 200px;
+    margin: 3px;
+}
+
+.select-style {
+    width: 100px !important;
     margin: 3px;
 }

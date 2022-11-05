@@ -9,6 +9,9 @@ let renderer = new THREE.WebGLRenderer();
 let clock = new THREE.Clock();
 let mouse = new THREE.Vector2();
 
+// Ajout de trous actif
+let enTrainDajouterDesTrous = false;
+
 // Heat source
 let geometryHeatSource = new THREE.CircleGeometry(5, 32);
 let materialHeatSource = new THREE.MeshBasicMaterial({ color: 0xffff00 });
@@ -104,11 +107,22 @@ function getMatrixPosFromMousePos(e) {
 }
 
 // EVENTS
+
+// varible qui contient le state et id du toggler html
+const toggleVarFromButton = (variable, id) => {
+    document.getElementById(id).addEventListener('click', (e) => {
+        variable = !variable;
+    });
+};
+
 renderer.domElement.addEventListener('click', (e) => {
     let mousePos = getMatrixPosFromMousePos(e);
     console.log(mousePos);
     tempMatrix[mousePos[1]][mousePos[0]] = -1;
 });
+
+// Toggle trous
+toggleVarFromButton(enTrainDajouterDesTrous, 'trou');
 
 // Start update loop
 update();
