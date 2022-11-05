@@ -71,7 +71,7 @@ function convertTemperatureMatrixToTexture(tempMatrix) {
     var data = new Uint8Array(4 * size[0] * size[1]); // 4* cuz rgba
 
     var stride = 0;
-    for (var i = 0; i < size[0]; i++) {
+    for (var i = size[0] - 1; i >= 0; i--) {
         for (var j = 0; j < size[1]; j++) {
             var color = mapTempToColor(tempMatrix[i][j]);
 
@@ -109,7 +109,7 @@ function getMatrixPosFromMousePos(e) {
     let stretchX = WIDTH / size[0];
     let stretchY = HEIGHT / size[1];
 
-    return [Math.floor(x / stretchX), Math.floor(y / stretchY)];
+    return [Math.floor(y / stretchY), Math.floor(x / stretchX)];
 }
 
 // EVENTS
@@ -124,7 +124,7 @@ const toggleVarFromButton = (variable, id) => {
 renderer.domElement.addEventListener('click', (e) => {
     let mousePos = getMatrixPosFromMousePos(e);
     console.log(mousePos);
-    tempMatrix[mousePos[1]][mousePos[0]] = -1;
+    tempMatrix[mousePos[0]][mousePos[1]] = -1;
 });
 
 renderer.domElement.addEventListener('mousedown', (e) => {
