@@ -1,6 +1,6 @@
 const FPS = 60;
-const WIDTH = window.innerWidth;
 const HEIGHT = window.innerHeight * 0.75;
+const WIDTH = HEIGHT;
 
 let scene = new THREE.Scene();
 let camera = new THREE.OrthographicCamera(WIDTH / -2, WIDTH / 2, HEIGHT / 2, HEIGHT / -2, 1, 1000);
@@ -102,8 +102,6 @@ document.body.addEventListener('click', (event) => {
     mouse.y = -(event.clientY / HEIGHT) * 2 + 1;
     raycaster.setFromCamera(mouse, camera);
 
-    circle.position.x = mouse.x;
-    circle.position.y = mouse.y;
-
-    console.log(mouse);
+    heatSource.position.x = mouse.x;
+    heatSource.position.y = mouse.y;
 });

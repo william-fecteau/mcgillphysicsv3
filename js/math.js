@@ -57,7 +57,7 @@ function diffusionStep(matrix, diffusionCoeff, deltaX) {
 
 function initMatrix() {
     var bigTestArray = math.zeros([100, 100]);
-    bigTestArray[50][50] = 1473;
+    bigTestArray[50][50] = 50000;
     bigTestArray[53][53] = 1473;
     bigTestArray[52][51] = 50073;
 
