@@ -1,80 +1,102 @@
+const FPS = 60;
 const WIDTH = window.innerWidth;
 const HEIGHT = window.innerHeight * 0.75;
 
-const loader = new THREE.TextureLoader();
-const texture = loader.load('assets/monke.jpg');
+var raycaster = new THREE.Raycaster();
 
-//constants Texture
-const TEXTURE_WIDTH = 4;
-const TEXTURE_HEIGHT = 4;
-const TEXTURE_SIZE = TEXTURE_WIDTH * TEXTURE_HEIGHT;
-var data = new Uint8Array(4 * TEXTURE_SIZE);
-var r, g, b;
-
-var testArray = [1, 2, 3, 4, 4, 3, 2, 1, 1, 2, 3, 4, 4, 3, 2, 1];
-
-//find color
-function colorMap(i) {
-    if (testArray[i] === 1) {
-        r = 33;
-        g = 150;
-        b = 243;
-    }
-    if (testArray[i] === 2) {
-        r = 76;
-        g = 175;
-        b = 80;
-    }
-    if (testArray[i] === 3) {
-        r = 255;
-        g = 235;
-        b = 59;
-    }
-    if (testArray[i] === 4) {
-        r = 211;
-        g = 47;
-        b = 47;
-    }
+function mapTempToColor(temp) {
+    if (temp < 0 || temp < 10) return [7, 42, 108];
+    else if (temp < 100) return [43, 106, 224];
+    else if (temp < 150) return [239, 247, 82];
+    else if (temp < 200) return [247, 170, 54];
+    else if (temp >= 200) return [255, 0, 0];
 }
-//apply color
-function applyColor() {
-    for (let i = 0; i < TEXTURE_SIZE; i++) {
-        colorMap(i);
 
-        var stride = i * 4;
-        data[stride] = r;
-        data[stride + 1] = g;
-        data[stride + 2] = b;
-        data[stride + 3] = 255;
+function convertTemperatureMatrixToTexture(tempMatrix) {
+    var sizes = math.size(tempMatrix);
+    var rows = sizes[0];
+    var cols = sizes[1];
+
+    var data = new Uint8Array(4 * rows * cols); // 4* cuz rgba
+
+    var stride = 0;
+    for (var i = 0; i < rows; i++) {
+        for (var j = 0; j < cols; j++) {
+            var color = mapTempToColor(tempMatrix[i][j]);
+
+            data[stride] = color[0];
+            data[stride + 1] = color[1];
+            data[stride + 2] = color[2];
+            data[stride + 3] = 255;
+
+            stride += 4;
+        }
     }
-    console.log(data);
+
+    var texture = new THREE.DataTexture(data, rows, cols);
+    texture.needsUpdate = true;
+    return texture;
 }
-applyColor();
-var mapTexture = new THREE.DataTexture(data, TEXTURE_WIDTH, TEXTURE_HEIGHT);
-mapTexture.needsUpdate = true;
 
 var scene = new THREE.Scene();
 var camera = new THREE.OrthographicCamera(WIDTH / -2, WIDTH / 2, HEIGHT / 2, HEIGHT / -2, 1, 1000);
-camera.position.z = 1;
+camera.position.z = 2;
 
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize(WIDTH, HEIGHT);
 // append a la div three js
 let element = document.body.getElementsByClassName('three-js');
-console.log(element);
 element[0].appendChild(renderer.domElement);
 
-var geometry = new THREE.BoxGeometry(WIDTH, HEIGHT, 0);
-var material = new THREE.MeshBasicMaterial({
-    map: mapTexture,
-});
-var cube = new THREE.Mesh(geometry, material);
-scene.add(cube);
+var cube = null;
 
-var animate = function () {
-    requestAnimationFrame(animate);
+const geometryCircle = new THREE.CircleGeometry(5, 32);
+const materialCircle = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+var circle = new THREE.Mesh(geometryCircle, materialCircle);
+circle.position.z = 1;
+scene.add(circle);
 
-    renderer.render(scene, camera);
+let clock = new THREE.Clock();
+let delta = 0;
+let interval = 1 / FPS;
+let nbUpdate = 0;
+let tempMatrix = initMatrix();
+var update = function () {
+    requestAnimationFrame(update);
+    delta += clock.getDelta();
+
+    if (delta > interval) {
+        delta = delta % interval;
+        nbUpdate++;
+
+        tempMatrix = compute(tempMatrix);
+        var textureResult = convertTemperatureMatrixToTexture(tempMatrix);
+
+        if (cube != null) scene.remove(cube);
+
+        var geometry = new THREE.BoxGeometry(WIDTH, HEIGHT, 0);
+        var material = new THREE.MeshBasicMaterial({
+            map: textureResult,
+        });
+        cube = new THREE.Mesh(geometry, material);
+        scene.add(cube);
+
+        renderer.render(scene, camera);
+        // console.log(nbUpdate);
+        // console.log(tempMatrix);
+    }
 };
 
-animate();
+update();
+
+var mouse = new THREE.Vector2();
+document.body.addEventListener('click', (event) => {
+    mouse.x = (event.clientX / WIDTH) * 2 - 1;
+    mouse.y = -(event.clientY / HEIGHT) * 2 + 1;
+    raycaster.setFromCamera(mouse, camera);
+
+    circle.position.x = mouse.x;
+    circle.position.y = mouse.y;
+
+    console.log(mouse);
+});
