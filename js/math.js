@@ -19,11 +19,17 @@ function createEmptyArray(yLength) {
     return newMatrix;
 }
 
-function diffusionStep(matrix, diffusionCoeff, deltaX, deltaY, deltaTime) {
+function diffusionStep(matrix, diffusionCoeff, deltaX) {
+    var deltaY = deltaX;
+    var deltaTime = deltaX ** 2 / (4 * diffusionCoeff);
     var alpha = (diffusionCoeff * deltaTime) / deltaX ** 2;
     var beta = (diffusionCoeff * deltaTime) / deltaY ** 2;
     var xLength = math.size(matrix)[1];
     var yLength = math.size(matrix)[0];
+
+    if (alpha + beta > 1 / 2) {
+        console.error('pepi');
+    }
 
     var newMatrix = createEmptyArray(yLength);
 
@@ -53,10 +59,11 @@ function initMatrix() {
     var bigTestArray = math.zeros([100, 100]);
     bigTestArray[50][50] = 1473;
     bigTestArray[53][53] = 1473;
+    bigTestArray[52][51] = 50073;
 
     return bigTestArray;
 }
 
 function compute(oldStep) {
-    return diffusionStep(oldStep, 500 * 10 ** -10, 0.0001, 0.0001, 0.001);
+    return diffusionStep(oldStep, 165 * 10 ** -6, 0.0001);
 }
