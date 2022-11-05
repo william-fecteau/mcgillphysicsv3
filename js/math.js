@@ -1,7 +1,11 @@
 "use strict";
 
-function output(strToOutput) {
-    document.getElementById("output").innerHTML = strToOutput;
+function appendOutput(strToOutput) {
+    document.getElementById("output").innerHTML = document.getElementById("output").innerHTML + strToOutput;
+}
+
+function clearOutput() {
+    document.getElementById("output").innerHTML = "";
 }
 
 function computeSomethingInteresting() {
@@ -12,4 +16,4 @@ function computeSomethingInteresting() {
 var idk = computeSomethingInteresting();
 var matrix = math.matrix([1, 4, 9, 16, 25]);
 
-output("Hello World! " + idk + " " + matrix);
+appendOutput("Hello World! " + idk + " " + matrix);
