@@ -9,6 +9,9 @@ let renderer = new THREE.WebGLRenderer();
 let clock = new THREE.Clock();
 let mouse = new THREE.Vector2();
 
+// Ajout de trous actif
+let enTrainDajouterDesTrous = false;
+
 // Heat source
 let geometryHeatSource = new THREE.CircleGeometry(5, 32);
 let materialHeatSource = new THREE.MeshBasicMaterial({ color: 0xffff00 });
@@ -95,12 +98,23 @@ function createHeatSource() {
 }
 
 // EVENTS
+
+// varible qui contient le state et id du toggler html
+const toggleVarFromButton = (variable, id) => {
+    document.getElementById(id).addEventListener('click', (e) => {
+        variable = !variable;
+    });
+};
+
 renderer.domElement.addEventListener('click', (e) => {
     var rect = e.target.getBoundingClientRect();
     var x = e.clientX - rect.left;
     var y = e.clientY - rect.top;
     console.log(x, y);
 });
+
+// Toggle trous
+toggleVarFromButton(enTrainDajouterDesTrous, 'trou');
 
 // Start update loop
 update();
