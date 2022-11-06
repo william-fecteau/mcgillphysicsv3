@@ -28,7 +28,10 @@ let tempMatrix, size;
 let heatSliderValue = 0.5;
 let heatSources;
 const geometryHeatSource = new THREE.CircleGeometry(HEAT_SOURCE_RADIUS);
-const materialHeatSource = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+const materialHeatSource = new THREE.MeshBasicMaterial({ color: 0xffffff });
+
+// Material
+setMaterial(0);
 
 // Setting up threejs
 let element = document.body.getElementsByClassName('three-js-renderer');
@@ -54,7 +57,7 @@ const init = () => {
 
     // Heat sources
     heatSources = [];
-    createHeatSource(50, 50, MAX_HEAT_SOURCE_POWER);
+    createHeatSource(50, 50, MAX_HEAT_SOURCE_POWER / 5);
 
     // Time control
     delta = 0;
@@ -218,6 +221,15 @@ function numberWithCommas(x) {
     return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',');
 }
 
+function setMaterial(materialIndex) {
+    let currentMat = materials[materialIndex];
+
+    E = currentMat.E;
+    gammaS = currentMat.gammaS;
+    al = currentMat.al;
+    diffusionCoefficent = currentMat.diffusionCoefficent;
+}
+
 // EVENTS
 
 document.getElementById('slider').disabled = true;
@@ -251,12 +263,7 @@ document.getElementById('forme').addEventListener('change', (e) => {
 });
 
 document.getElementById('material').addEventListener('change', (e) => {
-    currentMat = materials[e.target.value];
-
-    E = currentMat.E;
-    gammaS = currentMat.gammaS;
-    al = currentMat.al;
-    diffusionCoefficent = currentMat.diffusionCoefficent;
+    setMaterial(e.target.value);
 
     onRestartClicked();
 });
