@@ -71,8 +71,8 @@ function initMatrix(matrixSize, delta, diffusionCoeff) {
     // var bigTestArray = getAmogus();
     // var bigTestArray = getDonut();
     // var bigTestArray = getH();
-    // var bigTestArray = getMonke();
-    var bigTestArray = getTrollface();
+    var bigTestArray = getMonke();
+    // var bigTestArray = getTrollface();
     console.log(bigTestArray);
 
     //border generation
