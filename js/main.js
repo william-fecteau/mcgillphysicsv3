@@ -248,7 +248,7 @@ renderer.domElement.addEventListener('mouseup', (e) => {
 });*/
 
 renderer.domElement.addEventListener('mousemove', (e) => {
-    if (dragging && stopAnimation === false) {
+    if (dragging) {
         document.body.style.cursor = 'pointer';
         if (ajouterTrous) {
             createHole(e);
@@ -286,7 +286,6 @@ const setPlayPauseIcon = () => {
 
 const onRestartClicked = () => {
     init();
-    isSimulationRunning = true;
     setPlayPauseIcon();
 };
 
