@@ -46,16 +46,16 @@
 
         <div id="legend">
             <p class="text-white" id="pain">> 4000 K</p>
-            <div class="legend-color legend-1"> </div>
-            <div class="legend-color legend-2"> </div>
-            <div class="legend-color legend-3"> </div>
-            <div class="legend-color legend-4"> </div>
-            <div class="legend-color legend-5"> </div>
-            <div class="legend-color legend-6"> </div>
-            <div class="legend-color legend-7"> </div>
-            <div class="legend-color legend-8"> </div>
-            <div class="legend-color legend-9"> </div>
-            <div class="legend-color legend-10"> </div>
+            <div class="legend-color legend-1"></div>
+            <div class="legend-color legend-2"></div>
+            <div class="legend-color legend-3"></div>
+            <div class="legend-color legend-4"></div>
+            <div class="legend-color legend-5"></div>
+            <div class="legend-color legend-6"></div>
+            <div class="legend-color legend-7"></div>
+            <div class="legend-color legend-8"></div>
+            <div class="legend-color legend-9"></div>
+            <div class="legend-color legend-10"></div>
             <p class="text-white">0 K</p>
         </div>
 
@@ -133,7 +133,7 @@
                 />
             </div>
         </div>
-        <div class="modal" id="exampleModal" tabindex="-1">
+        <div class="modal" id="modal" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content bg-dark text-white">
                     <div class="modal-header">
@@ -146,7 +146,32 @@
                         ></button>
                     </div>
                     <div class="modal-body">
-                        <p>Modal body text goes here.</p>
+                        <p>
+                            This program is a simulation of heat diffusion.
+                            It also simulate the apparitons of cracks in the material due to weaknesses.
+
+                            In this simulation, weaknesses act as heat sinks.
+                            Cracks propagate to the closest weakness or edge.
+
+                            In this simulation, weaknesses are represented by the color black, and cracks are represented by the color grey.
+                            The temperature of the surface is represented by the chart on the right.
+
+                            Move heat source:
+                                Allows you to drag the heat sources around.
+                                When "Allow heat fracture" is disabled, double click can manually start a crack.
+                            Add weakness: 
+                                On click, adds a weakness. You can also drag to create multiple weaknesses.
+                            Add heat source:
+                                On click, adds a heat sources. You can also drag to create multiple sources.
+                                You can also choose the heat of the source with the slider.
+                            Map:
+                                Choose among the different surfaces to experiment with.
+                            Material:
+                                Choose the material of what the surface is made.
+                                Different materials have different levels of resistance to heat.
+                            Allow heat fracturation:
+                                When enabled, allows high heat to create weaknesses and cracks in the surface.
+                        </p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
@@ -156,11 +181,12 @@
                 </div>
             </div>
         </div>
+        <!-- TODO MODAL BOUTON ???? -->
         <button
             type="button"
             class="btn btn-primary"
             data-bs-toggle="modal"
-            data-bs-target="#exampleModal"
+            data-bs-target="#modal"
         >
             Launch demo modal
         </button>
