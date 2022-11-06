@@ -109,6 +109,8 @@ function initMatrix(matrixSize, delta) {
         bigTestArray = getMonke();
     } else if (forme === 5) {
         bigTestArray = getTrollface();
+    } else if (forme === 6) {
+        bigTestArray = getSurprise();
     } else {
         bigTestArray = math.zeros([matrixSize, matrixSize]);
     }
