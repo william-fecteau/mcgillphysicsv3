@@ -61,7 +61,6 @@ var update = function () {
         renderer.render(scene, camera);
 
         nbUpdate++;
-        // console.log(nbUpdate);
     }
 };
 
@@ -80,7 +79,7 @@ function mapTempToColor(temp) {
     ];
 
     const minHeat = 0;
-    let maxHeat = 1.3 * MAX_HEAT_SOURCE_POWER;
+    let maxHeat = 0.8 * MAX_HEAT_SOURCE_POWER;
 
     if (temp < minHeat) return [0, 0, 0];
 
@@ -138,8 +137,6 @@ function createHeatSource(i, j, heat) {
     circle.position.z = 1;
     scene.add(circle);
 
-    console.log(circle.position);
-
     circle.i = i;
     circle.j = j;
     circle.heat = heat;
@@ -160,7 +157,6 @@ function getMatrixPosFromMousePos(e) {
     let rect = e.target.getBoundingClientRect();
     let x = e.clientX - rect.left;
     let y = e.clientY - rect.top;
-    console.log(x, y);
 
     let stretchX = WIDTH / size[0];
     let stretchY = HEIGHT / size[1];
@@ -193,7 +189,7 @@ document.getElementById('rien').addEventListener('click', (e) => {
 renderer.domElement.addEventListener('click', (e) => {
     let mousePos = getMatrixPosFromMousePos(e);
     if (ajouterHeatSource) {
-        createHeatSource(mousePos[0], mousePos[1], MAX_HEAT_SOURCE_POWER);
+        createHeatSource(mousePos[0], mousePos[1], (heatSliderValue * MAX_HEAT_SOURCE_POWER) / 100);
     }
 });
 
@@ -206,7 +202,6 @@ renderer.domElement.addEventListener('mousedown', (e) => {
         let pos2 = getWorldPosFromMatrixPos(pos[0], pos[1]);
         let mousePos = new THREE.Vector2(pos2[0], pos2[1]);
         for (i = 0; i < heatSources.length; i++) {
-            console.log(pos2[0], pos2[1], heatSources[i].position);
             let heatPoint = new THREE.Vector2(heatSources[i].position.x, heatSources[i].position.y);
             if (mousePos.distanceTo(heatPoint) < HEAT_SOURCE_RADIUS) {
                 target = heatSources[i];
