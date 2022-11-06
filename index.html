@@ -28,6 +28,15 @@
         ></script>
     </head>
     <body>
+        <div id="help">
+            <button
+                type="button"
+                class="btn btn-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#modal">?</button>
+        </div>
+
+
         <div class="three-js">
             <div class="three-js-renderer"></div>
             <div id="simulation-info" class="d-flex justify-content-center">
@@ -181,15 +190,6 @@
                 </div>
             </div>
         </div>
-        <!-- TODO MODAL BOUTON ???? -->
-        <button
-            type="button"
-            class="btn btn-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#modal"
-        >
-            Launch demo modal
-        </button>
 
         <script src="./initialSetup/amogus.js"></script>
         <script src="./initialSetup/donut.js"></script>
