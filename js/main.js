@@ -80,7 +80,7 @@ function mapTempToColor(temp) {
     ];
 
     const minHeat = 0;
-    let maxHeat = 1.3 * MAX_HEAT_SOURCE_POWER;
+    let maxHeat = 0.8 * MAX_HEAT_SOURCE_POWER;
 
     if (temp < minHeat) return [0, 0, 0];
 

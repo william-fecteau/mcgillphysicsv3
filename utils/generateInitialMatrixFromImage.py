@@ -1,6 +1,6 @@
 from PIL import Image
 
-IMAGE_FILE = "./assets/amogus.png"
+IMAGE_FILE = "./assets/trollface.png"
 
 
 img = Image.open(IMAGE_FILE)
