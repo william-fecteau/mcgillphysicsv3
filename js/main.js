@@ -18,7 +18,7 @@ let dragging = false;
 let target;
 
 // Initialize temperature matrix
-let tempMatrix = initMatrix();
+let tempMatrix = initMatrix(100, 0.0001, 165 * 10 ** -6);
 let size = math.size(tempMatrix);
 
 // Heat source
