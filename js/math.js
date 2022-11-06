@@ -1,6 +1,19 @@
 'use strict';
 
 /*
+Global variables
+
+*/
+
+var deltaX;
+var deltaY;
+var deltaTime;
+var alpha;
+var beta;
+var xLength;
+var yLength;
+
+/*
 units: 
 temperature: Kelvin
 distance: meter
@@ -19,23 +32,20 @@ function createEmptyArray(yLength) {
     return newMatrix;
 }
 
-function diffusionStep(matrix, diffusionCoeff, deltaX) {
-    var deltaY = deltaX;
-    var deltaTime = 0.95 * (deltaX ** 2 / (4 * diffusionCoeff));
-    var alpha = (diffusionCoeff * deltaTime) / deltaX ** 2;
-    var beta = (diffusionCoeff * deltaTime) / deltaY ** 2;
-    var xLength = math.size(matrix)[1];
-    var yLength = math.size(matrix)[0];
-
+function diffusionStep(matrix) {
+    //asserts eq validity
     if (alpha + beta > 1 / 2) {
         console.error('pepi');
     }
 
     var newMatrix = createEmptyArray(yLength);
 
+    //evaluation function for points
     for (let i = 0; i < xLength; i++) {
         for (let j = 0; j < yLength; j++) {
-            if (matrix[j][i] != -1) {
+            //Hole/border detection
+            if (matrix[j][i] >= 0) {
+                //diffusion equation
                 newMatrix[j][i] =
                     alpha * (math.max(matrix[j + 1][i], 0) + math.max(matrix[j - 1][i], 0)) +
                     beta * (math.max(matrix[j][i + 1], 0) + math.max(matrix[j][i - 1], 0)) +
@@ -47,18 +57,28 @@ function diffusionStep(matrix, diffusionCoeff, deltaX) {
     return newMatrix;
 }
 
-function initMatrix() {
-    var length = 100;
-    var bigTestArray = math.zeros([length, length]);
+function initMatrix(matrixSize, delta, diffusionCoeff) {
+    //initialise diffusion eq data
+    deltaX = delta;
+    deltaY = delta;
+    deltaTime = 0.95 * (deltaX ** 2 / (4 * diffusionCoeff));
+    alpha = (diffusionCoeff * deltaTime) / deltaX ** 2;
+    beta = (diffusionCoeff * deltaTime) / deltaY ** 2;
+    xLength = matrixSize;
+    yLength = matrixSize;
 
-    for (let i = 0; i < length; i++) {
+    //create empty matrix
+    var bigTestArray = math.zeros([matrixSize, matrixSize]);
+
+    //border generation
+    for (let i = 0; i < matrixSize; i++) {
         bigTestArray[0][i] = -1;
-        bigTestArray[length - 1][i] = -1;
+        bigTestArray[matrixSize - 1][i] = -1;
     }
 
-    for (let j = 0; j < length; j++) {
+    for (let j = 0; j < matrixSize; j++) {
         bigTestArray[j][0] = -1;
-        bigTestArray[j][length - 1] = -1;
+        bigTestArray[j][matrixSize - 1] = -1;
     }
 
     return bigTestArray;
@@ -71,5 +91,5 @@ function compute(oldStep, heatSources) {
         oldStep[heatSources[i].i][heatSources[i].j] += heatSources[i].heat;
     }
 
-    return diffusionStep(oldStep, 165 * 10 ** -6, 0.0001);
+    return diffusionStep(oldStep);
 }
