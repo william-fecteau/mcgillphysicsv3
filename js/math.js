@@ -67,7 +67,11 @@ function diffusionStep(matrix) {
                     newMatrix[j][i] = -1;
                     unusedWeaknesses.push([j, i]);
                 }
-            } else newMatrix[j][i] = -1;
+            } else if (matrix[j][i] === -1) {
+                newMatrix[j][i] = -1;
+            } else if (matrix[j][i] === -2) {
+                newMatrix[j][i] = -2;
+            }
         }
     }
 
@@ -98,6 +102,8 @@ function initMatrix(matrixSize, delta) {
         bigTestArray = getMonke();
     } else if (forme === 5) {
         bigTestArray = getTrollface();
+    } else {
+        bigTestArray = math.zeros([matrixSize, matrixSize]);
     }
 
     //border generation
@@ -169,6 +175,31 @@ function pathfinding(matrix, startCoords) {
         console.log(unusedWeaknesses, path);
     }
     return;
+}
+
+function fissure(matrix) {
+    console.log('fissure' + path);
+    let px1 = path[0][0];
+    let py1 = path[0][1];
+    let px2 = path[1][0];
+    let py2 = path[1][1];
+
+    let dx = px2 - px1;
+    let dy = py2 - py1;
+    let v = new THREE.Vector2(dx, dy);
+
+    let vU = v.normalize();
+
+    px1 = Math.round(px1 + vU.x);
+    py1 = Math.round(py1 + vU.y);
+
+    matrix[px1][py1] = -2;
+    if (px1 === px2 && py1 === py2) {
+        path.splice(0, 1);
+    } else {
+        path[0][0] = px1;
+        path[0][1] = py1;
+    }
 }
 
 function compute(oldStep, heatSources) {

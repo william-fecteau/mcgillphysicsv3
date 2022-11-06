@@ -11,7 +11,7 @@ let renderer = new THREE.WebGLRenderer();
 let cube = null;
 
 // Time control
-let delta, nbUpdate, clock;
+let delta, nbUpdate, timeElapsedMs, clock;
 
 // State control
 let forme = 1;
@@ -28,7 +28,7 @@ const geometryHeatSource = new THREE.CircleGeometry(HEAT_SOURCE_RADIUS);
 const materialHeatSource = new THREE.MeshBasicMaterial({ color: 0xffff00 });
 
 // Setting up threejs
-let element = document.body.getElementsByClassName('three-js');
+let element = document.body.getElementsByClassName('three-js-renderer');
 element[0].appendChild(renderer.domElement);
 renderer.setSize(WIDTH, HEIGHT);
 camera.position.z = 2;
@@ -59,6 +59,7 @@ const init = () => {
     // Time control
     delta = 0;
     nbUpdate = 0;
+    timeElapsedMs = 0;
 };
 
 function render() {
@@ -80,7 +81,18 @@ var update = function () {
     if (delta > 1 / FPS) {
         delta = delta % (1 / FPS);
 
-        if (isSimulationRunning) tempMatrix = compute(tempMatrix, heatSources);
+        if (isSimulationRunning) {
+            tempMatrix = compute(tempMatrix, heatSources);
+            timeElapsedMs += deltaTime * 1000;
+        }
+
+        let temperatureAvg = computeTempMatrixAvg(tempMatrix);
+        document.getElementById('simulation-info-content').innerHTML =
+            'Avg temp.: ' +
+            numberWithCommas(temperatureAvg.toFixed(2)) +
+            ' K - Time elapsed: ' +
+            numberWithCommas(timeElapsedMs.toFixed(2)) +
+            ' ms';
 
         render();
 
@@ -183,6 +195,26 @@ function getMatrixPosFromMousePos(e) {
     let stretchY = HEIGHT / size[1];
 
     return [Math.floor(y / stretchY), Math.floor(x / stretchX)];
+}
+
+function computeTempMatrixAvg(tempMatrix) {
+    let sum = 0;
+    let count = 0;
+
+    for (let i = 0; i < size[0]; i++) {
+        for (let j = 0; j < size[1]; j++) {
+            if (tempMatrix[i][j] >= 0) {
+                sum += tempMatrix[i][j];
+                count++;
+            }
+        }
+    }
+
+    return sum / count;
+}
+
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',');
 }
 
 // EVENTS
