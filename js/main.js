@@ -3,6 +3,39 @@ const HEIGHT = window.innerHeight * 0.75;
 const WIDTH = HEIGHT;
 const MAX_HEAT_SOURCE_POWER = 5000;
 const HEAT_SOURCE_RADIUS = 5;
+const init = () => {
+    scene = new THREE.Scene();
+    camera = new THREE.OrthographicCamera(WIDTH / -2, WIDTH / 2, HEIGHT / 2, HEIGHT / -2, 1, 1000);
+    raycaster = new THREE.Raycaster();
+    renderer = new THREE.WebGLRenderer();
+    clock = new THREE.Clock();
+    mouse = new THREE.Vector2();
+
+    stopAnimation = false;
+
+    // Ajout de trous actif
+    ajouterHeatSource = false;
+    ajouterTrous = false;
+    dragging = false;
+    target;
+
+    // Initialize temperature matrix
+    tempMatrix = initMatrix(100, 0.0001, 165 * 10 ** -6);
+    size = math.size(tempMatrix);
+
+    // Heat source
+    heatSliderValue = 0;
+    heatSources = [];
+    geometryHeatSource = new THREE.CircleGeometry(HEAT_SOURCE_RADIUS);
+    materialHeatSource = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+    createHeatSource(50, 50, MAX_HEAT_SOURCE_POWER);
+    createHeatSource(5, 5, MAX_HEAT_SOURCE_POWER);
+    createHeatSource(80, 5, 500);
+
+    cube = null;
+    delta = 0;
+    nbUpdate = 0;
+};
 
 let scene = new THREE.Scene();
 let camera = new THREE.OrthographicCamera(WIDTH / -2, WIDTH / 2, HEIGHT / 2, HEIGHT / -2, 1, 1000);
@@ -10,6 +43,8 @@ let raycaster = new THREE.Raycaster();
 let renderer = new THREE.WebGLRenderer();
 let clock = new THREE.Clock();
 let mouse = new THREE.Vector2();
+
+let stopAnimation = false;
 
 // Ajout de trous actif
 let ajouterHeatSource = false;
@@ -40,6 +75,7 @@ let cube = null;
 let delta = 0;
 let nbUpdate = 0;
 var update = function () {
+    if (stopAnimation) return;
     requestAnimationFrame(update);
     delta += clock.getDelta();
 
@@ -212,11 +248,13 @@ renderer.domElement.addEventListener('mousedown', (e) => {
 });
 
 renderer.domElement.addEventListener('mouseup', (e) => {
+    document.body.style.cursor = 'auto';
     dragging = false;
 });
 
 renderer.domElement.addEventListener('mousemove', (e) => {
     if (dragging) {
+        document.body.style.cursor = 'pointer';
         if (ajouterTrous) {
             createHole(e);
         } else if (!ajouterHeatSource) {
@@ -236,5 +274,21 @@ document.getElementById('slider').addEventListener('change', (e) => {
     heatSliderValue = e.target.value;
 });
 document.getElementById('slider').value = heatSliderValue;
+
+const onPlayClicked = () => {
+    stopAnimation = false;
+    update();
+};
+
+const onPauseClicked = () => {
+    stopAnimation = true;
+};
+
+const onRestartClicked = () => {
+    onPauseClicked();
+    init();
+    requestAnimationFrame(update);
+    onPlayClicked();
+};
 // Start update loop
-update();
+// update();
