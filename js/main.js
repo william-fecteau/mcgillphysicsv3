@@ -16,7 +16,10 @@ let delta, nbUpdate, timeElapsedMs, clock;
 // State control
 let forme = 1;
 let isSimulationRunning = true;
-let ajouterHeatSource, ajouterTrous, dragging, target;
+let ajouterHeatSource = false;
+let ajouterTrous = false;
+let dragging = false;
+let target = null;
 let heatFracturationOn = false;
 
 // Temp matrix
@@ -26,7 +29,10 @@ let tempMatrix, size;
 let heatSliderValue = 0.5;
 let heatSources;
 const geometryHeatSource = new THREE.CircleGeometry(HEAT_SOURCE_RADIUS);
-const materialHeatSource = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+const materialHeatSource = new THREE.MeshBasicMaterial({ color: 0xffffff });
+
+// Material
+setMaterial(0);
 
 // Setting up threejs
 let element = document.body.getElementsByClassName('three-js-renderer');
@@ -43,9 +49,6 @@ const init = () => {
     }
 
     // Set initial state
-    ajouterHeatSource = false;
-    ajouterTrous = false;
-    dragging = false;
     target = null;
     cube = null;
 
@@ -55,7 +58,7 @@ const init = () => {
 
     // Heat sources
     heatSources = [];
-    createHeatSource(50, 50, MAX_HEAT_SOURCE_POWER);
+    createHeatSource(50, 50, MAX_HEAT_SOURCE_POWER / 5);
 
     // Time control
     delta = 0;
@@ -67,6 +70,10 @@ function render() {
     var textureResult = convertTemperatureMatrixToTexture(tempMatrix);
 
     if (cube != null) scene.remove(cube);
+
+    if (path.length > 1) {
+        fissure(tempMatrix);
+    }
 
     var geometry = new THREE.BoxGeometry(WIDTH, HEIGHT, 0);
     var material = new THREE.MeshBasicMaterial({
@@ -121,7 +128,8 @@ function mapTempToColor(temp) {
     const minHeat = 0;
     let maxHeat = 0.8 * MAX_HEAT_SOURCE_POWER;
 
-    if (temp < minHeat) return [0, 0, 0];
+    if (temp < -1) return [122, 122, 122];
+    if (temp === -1) return [0, 0, 0];
 
     let minIndex = 0;
     let maxIndex = gradient.length - 1;
@@ -218,6 +226,15 @@ function numberWithCommas(x) {
     return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',');
 }
 
+function setMaterial(materialIndex) {
+    let currentMat = materials[materialIndex];
+
+    E = currentMat.E;
+    gammaS = currentMat.gammaS;
+    al = currentMat.al;
+    diffusionCoefficent = currentMat.diffusionCoefficent;
+}
+
 // EVENTS
 
 document.getElementById('slider').disabled = true;
@@ -251,12 +268,7 @@ document.getElementById('forme').addEventListener('change', (e) => {
 });
 
 document.getElementById('material').addEventListener('change', (e) => {
-    currentMat = materials[e.target.value];
-
-    E = currentMat.E;
-    gammaS = currentMat.gammaS;
-    al = currentMat.al;
-    diffusionCoefficent = currentMat.diffusionCoefficent;
+    setMaterial(e.target.value);
 
     onRestartClicked();
 });
@@ -265,6 +277,9 @@ renderer.domElement.addEventListener('click', (e) => {
     let mousePos = getMatrixPosFromMousePos(e);
     if (ajouterHeatSource) {
         createHeatSource(mousePos[0], mousePos[1], (heatSliderValue * MAX_HEAT_SOURCE_POWER) / 100);
+    }
+    if (ajouterTrous) {
+        createHole(e);
     }
 });
 
@@ -291,11 +306,13 @@ renderer.domElement.addEventListener('mouseup', (e) => {
     dragging = false;
 });
 
-/*renderer.domElement.addEventListener('dblclick', (e) => {
-    let pos = getMatrixPosFromMousePos(e);
-    path = [];
-    pathfinding(tempMatrix, [pos[0], pos[1]]);
-});*/
+renderer.domElement.addEventListener('dblclick', (e) => {
+    if (!ajouterHeatSource && !ajouterTrous) {
+        let pos = getMatrixPosFromMousePos(e);
+        path = [];
+        pathfinding(tempMatrix, [pos[0], pos[1]]);
+    }
+});
 
 renderer.domElement.addEventListener('mousemove', (e) => {
     if (dragging) {
@@ -311,6 +328,13 @@ renderer.domElement.addEventListener('mousemove', (e) => {
                 target.i = pos[0];
                 target.j = pos[1];
             }
+        } else {
+            let mousePos = getMatrixPosFromMousePos(e);
+            createHeatSource(
+                mousePos[0],
+                mousePos[1],
+                (heatSliderValue * MAX_HEAT_SOURCE_POWER) / 100
+            );
         }
     } else {
         document.body.style.cursor = 'auto';
