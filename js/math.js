@@ -134,7 +134,7 @@ function pathfinding(matrix, startCoords) {
     let startPoint = new THREE.Vector2(startCoords[0], startCoords[1]);
     let matrixSize = math.size(matrix);
     let closest = [50000000, 0, 0];
-    console.log('a', closest, startPoint);
+    // console.log('a', closest, startPoint);
     //finding closest
     for (let i = 0; i < matrixSize[0]; i++) {
         for (let j = 0; j < matrixSize[1]; j++) {
@@ -160,7 +160,7 @@ function pathfinding(matrix, startCoords) {
             }
         }
     }
-    console.log('closest', closest);
+    // console.log('closest', closest);
     path.push(startCoords);
     for (let i = 0; i < unusedWeaknesses.length; i++) {
         if (
@@ -181,13 +181,13 @@ function pathfinding(matrix, startCoords) {
     }
     if (!found) {
         path.push([closest[1], closest[2]]);
-        console.log(unusedWeaknesses, path);
+        // console.log(unusedWeaknesses, path);
     }
     return;
 }
 
 function fissure(matrix) {
-    console.log('fissure' + path);
+    // console.log('fissure' + path);
     let px1 = path[0][0];
     let py1 = path[0][1];
     let px2 = path[1][0];
