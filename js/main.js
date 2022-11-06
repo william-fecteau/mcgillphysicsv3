@@ -221,6 +221,7 @@ function numberWithCommas(x) {
 
 document.getElementById('slider').disabled = true;
 document.getElementById('slider-div').hidden = true;
+document.getElementById('forme').value = forme;
 // Toggle trous
 document.getElementById('trous').addEventListener('click', (e) => {
     ajouterTrous = true;

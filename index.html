@@ -30,9 +30,11 @@
     <body>
         <div class="three-js">
             <div class="three-js-renderer"></div>
-            <div id="simulation-info" class="d-flex justify-content-center"><p id="simulation-info-content">ALLO<p></div>
+            <div id="simulation-info" class="d-flex justify-content-center">
+                <p id="simulation-info-content">ALLO</p>
+                <p></p>
+            </div>
         </div>
-
 
         <div class="menuwu col">
             <div class="row row-width">
@@ -50,18 +52,6 @@
                 >
                     <img src="./assets/restart.svg" class="white-icon" />
                 </button>
-            </div>
-            <div class="row row-width">
-                <!-- <button type="button" class="btn btn-dark btn-style row">UwU</button> -->
-                <select id="forme" class="form-select bg-dark text-white select-style col">
-                    <option value="" disabled selected hidden>Forme de depart</option>
-                    <option value="0">Plaque</option>
-                    <option value="1">Amogus</option>
-                    <option value="2">Donut</option>
-                    <option value="3">H</option>
-                    <option value="4">Monke</option>
-                    <option value="5">Troll face</option>
-                </select>
             </div>
             <div class="row row-width">
                 <input
@@ -100,7 +90,17 @@
                 <input type="range" class="form-range col align-self-center" id="slider" />
             </div>
             <div class="row row-width">
-                <!-- <button type="button" class="btn btn-dark btn-style row">UwU</button> -->
+                <select id="forme" class="form-select bg-dark text-white select-style col">
+                    <!-- <option value="" disabled selected hidden>Forme de depart</option> -->
+                    <option value="0">Plaque</option>
+                    <option value="1">Amogus</option>
+                    <option value="2">Donut</option>
+                    <option value="3">H</option>
+                    <option value="4">Monke</option>
+                    <option value="5">Troll face</option>
+                </select>
+            </div>
+            <div class="row row-width">
                 <select id="material" class="form-select bg-dark text-white select-style col">
                     <option value="" disabled selected hidden>Materiaux</option>
                     <option value="0">Aluminium</option>
