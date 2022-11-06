@@ -77,12 +77,11 @@ function render() {
 }
 
 var update = function () {
-    if (!isSimulationRunning) return;
-
     if (delta > 1 / FPS) {
         delta = delta % (1 / FPS);
 
-        tempMatrix = compute(tempMatrix, heatSources);
+        if (isSimulationRunning) tempMatrix = compute(tempMatrix, heatSources);
+
         render();
 
         nbUpdate++;
@@ -288,7 +287,6 @@ const setPlayPauseIcon = () => {
 const onRestartClicked = () => {
     init();
     isSimulationRunning = true;
-    requestAnimationFrame(update);
     setPlayPauseIcon();
 };
 
