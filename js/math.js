@@ -139,7 +139,7 @@ function pathfinding(matrix, startCoords) {
     //finding closest
     for (let i = 0; i < matrixSize[0]; i++) {
         for (let j = 0; j < matrixSize[1]; j++) {
-            if (matrix[i][j] === -2) {
+            if (matrix[i][j] === -1) {
                 let currentPoint = new THREE.Vector2(i, j);
                 let currentDist = currentPoint.distanceTo(startPoint);
                 //console.log('b', currentPoint, startPoint);
