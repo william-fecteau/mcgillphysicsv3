@@ -21,6 +21,7 @@ let tempMatrix = initMatrix();
 let size = math.size(tempMatrix);
 
 // Heat source
+let heatSliderValue = 0;
 let heatSources = [];
 let geometryHeatSource = new THREE.CircleGeometry(HEAT_SOURCE_RADIUS);
 let materialHeatSource = new THREE.MeshBasicMaterial({ color: 0xffff00 });
@@ -147,22 +148,26 @@ function getMatrixPosFromMousePos(e) {
 
 // EVENTS
 
+document.getElementById('slider').disabled = true;
 // Toggle trous
 document.getElementById('trous').addEventListener('click', (e) => {
     ajouterTrous = true;
     ajouterHeatSource = false;
+    document.getElementById('slider').disabled = true;
     console.log(ajouterTrous, ajouterHeatSource);
 });
 // Toggle heat source
 document.getElementById('source').addEventListener('click', (e) => {
     ajouterHeatSource = true;
     ajouterTrous = false;
+    document.getElementById('slider').disabled = false;
     console.log(ajouterTrous, ajouterHeatSource);
 });
 // Toggle rien
 document.getElementById('rien').addEventListener('click', (e) => {
     ajouterHeatSource = false;
     ajouterTrous = false;
+    document.getElementById('slider').disabled = true;
     console.log(ajouterTrous, ajouterHeatSource);
 });
 
@@ -191,5 +196,8 @@ renderer.domElement.addEventListener('mousemove', (e) => {
     }
 });
 
+document.getElementById('slider').addEventListener('change', (e) => {
+    heatSliderValue = e.target.value;
+});
 // Start update loop
 update();
