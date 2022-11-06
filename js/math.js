@@ -12,6 +12,12 @@ var alpha;
 var beta;
 var xLength;
 var yLength;
+var E = 157.5;
+var gammaS = 0.3;
+var al = 25.6 * 10 ** -6;
+
+var path = [];
+var unusedWeaknesses = [];
 
 /*
 units: 
@@ -50,6 +56,13 @@ function diffusionStep(matrix) {
                     alpha * (math.max(matrix[j + 1][i], 0) + math.max(matrix[j - 1][i], 0)) +
                     beta * (math.max(matrix[j][i + 1], 0) + math.max(matrix[j][i - 1], 0)) +
                     (1 - 2 * alpha - 2 * beta) * math.max(matrix[j][i], 0);
+
+                //fissure genesis
+                var deltaTemp = math.abs(matrix[j][i] - newMatrix[j][i]);
+                var seuilCritique = (math.sqrt((2 * E * gammaS) / math.PI) * 1) / (E * al);
+                if (deltaTemp > seuilCritique) {
+                    newMatrix[j][i] = -2;
+                }
             } else newMatrix[j][i] = -1;
         }
     }
@@ -70,8 +83,8 @@ function initMatrix(matrixSize, delta, diffusionCoeff) {
     //create empty matrix
     // var bigTestArray = getAmogus();
     // var bigTestArray = getDonut();
-    // var bigTestArray = getH();
-    var bigTestArray = getMonke();
+    var bigTestArray = getH();
+    // var bigTestArray = getMonke();
     // var bigTestArray = getTrollface();
 
     //border generation
@@ -86,6 +99,50 @@ function initMatrix(matrixSize, delta, diffusionCoeff) {
     }
 
     return bigTestArray;
+}
+
+function pathfinding(matrix, startCoords) {
+    let startPoint = new THREE.Vector2(startCoords[0], startCoords[1]);
+    let matrixSize = math.size(matrix);
+    let closest;
+    closest.dist = 0;
+    for (i = 0; i < matrixSize[0]; i++) {
+        for (j = 0; j < matrixSize[1]; j++) {
+            if (matrix[i][j] === -1) {
+                let currentPoint = new THREE.Vector2(i, j);
+                let currentDist = currentPoint.distanceTo(startPoint);
+                //closest non-used point
+                if (currentDist < closest.dist) {
+                    for (k = 0; k < path.length; k++) {
+                        if (path[k][0] === i && path[k][1] === j) {
+                            closest.dist = currentDist;
+                            closest.i = i;
+                            closest.j = j;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    path.add(startCoords);
+    for (i = 0; i < unusedWeaknesses.length; i++) {
+        if (
+            unusedWeaknesses[i][0] === startCoords[0] &&
+            unusedWeaknesses[i][1] === startCoords[1]
+        ) {
+            unusedWeaknesses.splice(i, 1);
+            break;
+        }
+    }
+    for (i = 0; i < unusedWeaknesses.length; i++) {
+        if (unusedWeaknesses[i][0] === closest.i && unusedWeaknesses[i][1] === closest.j) {
+            pathfinding(matrix, closest);
+            break;
+        }
+    }
+    path.add(closest);
+    return;
 }
 
 function compute(oldStep, heatSources) {
