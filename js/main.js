@@ -75,6 +75,10 @@ var update = function () {
 
         if (cube != null) scene.remove(cube);
 
+        if (path.length > 0) {
+            fissure(tempMatrix);
+        }
+
         var geometry = new THREE.BoxGeometry(WIDTH, HEIGHT, 0);
         var material = new THREE.MeshBasicMaterial({
             map: textureResult,
