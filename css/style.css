@@ -66,15 +66,29 @@ canvas {
 
 
 #legend {
-    margin-top: 10px;
-    margin-right: 5em;
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 4em;
-    height: 62vh;
-    text-align: center;
+    display: none;
 }
+
+@media screen and (min-width: 750px) {
+    #legend {
+        display: block;
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 4em;
+        height: 62vh;
+        text-align: center;
+        margin-right: 1em;
+    }    
+}
+
+@media screen and (min-width: 1000px) {
+    #legend {
+        margin-right: 5em;
+        right: 0;
+    }    
+}
+
 
 
 .legend-color {
