@@ -307,7 +307,7 @@ renderer.domElement.addEventListener('mouseup', (e) => {
 });
 
 renderer.domElement.addEventListener('dblclick', (e) => {
-    if (!ajouterHeatSource && !ajouterTrous) {
+    if (!ajouterHeatSource && !ajouterTrous && !heatFracturationOn) {
         let pos = getMatrixPosFromMousePos(e);
         path = [];
         pathfinding(tempMatrix, [pos[0], pos[1]]);
