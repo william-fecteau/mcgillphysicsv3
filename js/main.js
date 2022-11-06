@@ -3,65 +3,28 @@ const HEIGHT = window.innerHeight * 0.75;
 const WIDTH = HEIGHT;
 const MAX_HEAT_SOURCE_POWER = 5000;
 const HEAT_SOURCE_RADIUS = 5;
-const init = () => {
-    scene = new THREE.Scene();
-    camera = new THREE.OrthographicCamera(WIDTH / -2, WIDTH / 2, HEIGHT / 2, HEIGHT / -2, 1, 1000);
-    raycaster = new THREE.Raycaster();
-    renderer = new THREE.WebGLRenderer();
-    clock = new THREE.Clock();
-    mouse = new THREE.Vector2();
 
-    stopAnimation = false;
-
-    // Ajout de trous actif
-    ajouterHeatSource = false;
-    ajouterTrous = false;
-    dragging = false;
-    target;
-
-    // Initialize temperature matrix
-    tempMatrix = initMatrix(100, 0.0001, 165 * 10 ** -6);
-    size = math.size(tempMatrix);
-
-    // Heat source
-    heatSliderValue = 0;
-    heatSources = [];
-    geometryHeatSource = new THREE.CircleGeometry(HEAT_SOURCE_RADIUS);
-    materialHeatSource = new THREE.MeshBasicMaterial({ color: 0xffff00 });
-    createHeatSource(50, 50, MAX_HEAT_SOURCE_POWER);
-    createHeatSource(5, 5, MAX_HEAT_SOURCE_POWER);
-    createHeatSource(80, 5, 500);
-
-    cube = null;
-    delta = 0;
-    nbUpdate = 0;
-};
-let forme = 1;
+// Threejs variables
 let scene = new THREE.Scene();
 let camera = new THREE.OrthographicCamera(WIDTH / -2, WIDTH / 2, HEIGHT / 2, HEIGHT / -2, 1, 1000);
-let raycaster = new THREE.Raycaster();
 let renderer = new THREE.WebGLRenderer();
-let clock = new THREE.Clock();
-let mouse = new THREE.Vector2();
+let cube = null;
 
-let stopAnimation = false;
+// Time control
+let delta, nbUpdate, clock;
 
-// Ajout de trous actif
-let ajouterHeatSource = false;
-let ajouterTrous = false;
-let dragging = false;
-let target;
+// State control
+let forme = 1;
+let stopAnimation, ajouterHeatSource, ajouterTrous, dragging, target;
 
-// Initialize temperature matrix
-let tempMatrix = initMatrix(100, 0.0001, 165 * 10 ** -6);
-let size = math.size(tempMatrix);
+// Temp matrix
+let tempMatrix, size;
 
-// Heat source
-let heatSliderValue = 0;
-let heatSources = [];
-let geometryHeatSource = new THREE.CircleGeometry(HEAT_SOURCE_RADIUS);
-let materialHeatSource = new THREE.MeshBasicMaterial({ color: 0xffff00 });
-createHeatSource(50, 50, MAX_HEAT_SOURCE_POWER);
+// Heat sources
+let heatSliderValue = 0.5;
+let heatSources;
+const geometryHeatSource = new THREE.CircleGeometry(HEAT_SOURCE_RADIUS);
+const materialHeatSource = new THREE.MeshBasicMaterial({ color: 0xffff00 });
 
 // Setting up threejs
 let element = document.body.getElementsByClassName('three-js');
@@ -69,9 +32,35 @@ element[0].appendChild(renderer.domElement);
 renderer.setSize(WIDTH, HEIGHT);
 camera.position.z = 2;
 
-let cube = null;
-let delta = 0;
-let nbUpdate = 0;
+const init = () => {
+    clock = new THREE.Clock();
+
+    // Clearing the scene
+    while (scene.children.length > 0) {
+        scene.remove(scene.children[0]);
+    }
+
+    // Set initial state
+    stopAnimation = false;
+    ajouterHeatSource = false;
+    ajouterTrous = false;
+    dragging = false;
+    target = null;
+    cube = null;
+
+    // Initialize temperature matrix
+    tempMatrix = initMatrix(100, 0.0001, 165 * 10 ** -6);
+    size = math.size(tempMatrix);
+
+    // Heat sources
+    heatSources = [];
+    createHeatSource(50, 50, MAX_HEAT_SOURCE_POWER);
+
+    // Time control
+    delta = 0;
+    nbUpdate = 0;
+};
+
 var update = function () {
     if (stopAnimation) return;
     requestAnimationFrame(update);
@@ -155,15 +144,6 @@ function createHole(e) {
         tempMatrix[pos[0]][pos[1]] = -1;
         unusedWeaknesses.push(pos);
     }
-    /*tempMatrix[pos[0] + 1][pos[1]] = -1;
-    tempMatrix[pos[0]][pos[1] + 1] = -1;
-    tempMatrix[pos[0] - 1][pos[1]] = -1;
-    tempMatrix[pos[0]][pos[1] - 1] = -1;
-    ////////////////////////
-    tempMatrix[pos[0] + 1][pos[1] + 1] = -1;
-    tempMatrix[pos[0] + 1][pos[1] - 1] = -1;
-    tempMatrix[pos[0] - 1][pos[1] + 1] = -1;
-    tempMatrix[pos[0] - 1][pos[1] - 1] = -1;*/
 }
 
 function createHeatSource(i, j, heat) {
@@ -302,5 +282,7 @@ const onRestartClicked = () => {
     requestAnimationFrame(update);
     onPlayClicked();
 };
+
 // Start update loop
-// update();
+init();
+update();
