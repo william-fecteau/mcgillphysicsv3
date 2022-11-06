@@ -13,7 +13,7 @@ var beta;
 var xLength;
 var yLength;
 var E = 157.5;
-var gammaS = 0.3 * 10 ** 6;
+var gammaS = 0.3 * 10 ** 0;
 var al = 25.6 * 10 ** -6;
 
 var path = [];
@@ -61,14 +61,23 @@ function diffusionStep(matrix) {
                 //fissure genesis
                 var deltaTemp = math.abs(matrix[j][i] - newMatrix[j][i]);
                 var seuilCritique = (math.sqrt((2 * E * gammaS) / math.PI) * 1) / (E * al);
+
                 if (deltaTemp > seuilCritique) {
                     newMatrix[j][i] = -1;
                     unusedWeaknesses.push([j, i]);
+
+                    path = [];
+                    pathfinding(matrix, [j, i]);
+                    while (path.length > 1) {
+                        fissure(matrix);
+                    }
                 }
             } else if (matrix[j][i] === -1) {
                 newMatrix[j][i] = -1;
             } else if (matrix[j][i] === -2) {
                 newMatrix[j][i] = -2;
+            } else if (matrix[j][i] === -3) {
+                newMatrix[j][i] = -3;
             }
         }
     }
@@ -127,7 +136,7 @@ function pathfinding(matrix, startCoords) {
     //finding closest
     for (let i = 0; i < matrixSize[0]; i++) {
         for (let j = 0; j < matrixSize[1]; j++) {
-            if (matrix[i][j] === -1) {
+            if (matrix[i][j] === -2) {
                 let currentPoint = new THREE.Vector2(i, j);
                 let currentDist = currentPoint.distanceTo(startPoint);
                 //console.log('b', currentPoint, startPoint);
@@ -191,7 +200,7 @@ function fissure(matrix) {
     px1 = Math.round(px1 + vU.x);
     py1 = Math.round(py1 + vU.y);
 
-    matrix[px1][py1] = -2;
+    matrix[px1][py1] = -3;
     if (px1 === px2 && py1 === py2) {
         path.splice(0, 1);
     } else {
