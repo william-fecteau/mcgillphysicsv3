@@ -27,8 +27,6 @@ let heatSources = [];
 let geometryHeatSource = new THREE.CircleGeometry(HEAT_SOURCE_RADIUS);
 let materialHeatSource = new THREE.MeshBasicMaterial({ color: 0xffff00 });
 createHeatSource(50, 50, MAX_HEAT_SOURCE_POWER);
-createHeatSource(5, 5, MAX_HEAT_SOURCE_POWER);
-createHeatSource(80, 5, 500);
 
 // Setting up threejs
 let element = document.body.getElementsByClassName('three-js');
@@ -61,7 +59,6 @@ var update = function () {
         renderer.render(scene, camera);
 
         nbUpdate++;
-        // console.log(nbUpdate);
     }
 };
 
@@ -80,7 +77,7 @@ function mapTempToColor(temp) {
     ];
 
     const minHeat = 0;
-    let maxHeat = 1.3 * MAX_HEAT_SOURCE_POWER;
+    let maxHeat = 0.8 * MAX_HEAT_SOURCE_POWER;
 
     if (temp < minHeat) return [0, 0, 0];
 
@@ -138,8 +135,6 @@ function createHeatSource(i, j, heat) {
     circle.position.z = 1;
     scene.add(circle);
 
-    console.log(circle.position);
-
     circle.i = i;
     circle.j = j;
     circle.heat = heat;
@@ -160,7 +155,6 @@ function getMatrixPosFromMousePos(e) {
     let rect = e.target.getBoundingClientRect();
     let x = e.clientX - rect.left;
     let y = e.clientY - rect.top;
-    console.log(x, y);
 
     let stretchX = WIDTH / size[0];
     let stretchY = HEIGHT / size[1];
@@ -206,7 +200,6 @@ renderer.domElement.addEventListener('mousedown', (e) => {
         let pos2 = getWorldPosFromMatrixPos(pos[0], pos[1]);
         let mousePos = new THREE.Vector2(pos2[0], pos2[1]);
         for (i = 0; i < heatSources.length; i++) {
-            console.log(pos2[0], pos2[1], heatSources[i].position);
             let heatPoint = new THREE.Vector2(heatSources[i].position.x, heatSources[i].position.y);
             if (mousePos.distanceTo(heatPoint) < HEAT_SOURCE_RADIUS) {
                 target = heatSources[i];
