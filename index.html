@@ -30,31 +30,22 @@
     <body>
         <div class="three-js"></div>
         <div class="menuwu col">
-            <div class="row">
-                <button
-                    id="trou"
-                    type="button"
-                    class="btn btn-dark btn-style col"
-                    data-bs-toggle="button"
-                >
-                    Ajouter des trous
-                </button>
-                <!-- <button type="button" class="btn btn-dark btn-style row">UwU</button> -->
-                <select class="form-select bg-dark text-white select-style col">
-                    <option value="" disabled selected hidden>Materiaux</option>
-                    <option value="2">One</option>
-                    <option value="3">Two</option>
-                    <option value="4">Three</option>
-                </select>
-            </div>
-            <div class="row">
+            <div class="row row-width">
+                <input
+                    type="radio"
+                    class="btn-check col"
+                    name="options-outlined"
+                    id="rien"
+                    complete="off"
+                    checked
+                />
+                <label class="btn btn-dark btn-style col" for="rien">rien</label>
                 <input
                     type="radio"
                     class="btn-check col"
                     name="options-outlined"
                     id="trous"
-                    complete="off"
-                    checked
+                    autocomplete="off"
                 />
                 <label class="btn btn-dark btn-style col" for="trous">Ajouter des trous</label>
 
@@ -68,14 +59,15 @@
                 <label class="btn btn-dark btn-style col" for="source"
                     >Ajouter des sources de chaleur</label
                 >
-                <input
-                    type="radio"
-                    class="btn-check col"
-                    name="options-outlined"
-                    id="rien"
-                    autocomplete="off"
-                />
-                <label class="btn btn-dark btn-style col" for="rien">rien</label>
+            </div>
+            <div class="row row-width">
+                <!-- <button type="button" class="btn btn-dark btn-style row">UwU</button> -->
+                <select class="form-select bg-dark text-white select-style col">
+                    <option value="" disabled selected hidden>Materiaux</option>
+                    <option value="2">One</option>
+                    <option value="3">Two</option>
+                    <option value="4">Three</option>
+                </select>
             </div>
         </div>
 

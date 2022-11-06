@@ -65,12 +65,32 @@ var update = function () {
 };
 
 function mapTempToColor(temp) {
-    if (temp < 0) return [0, 0, 0];
-    else if (temp < 10) return [7, 42, 108];
-    else if (temp < 100) return [43, 106, 224];
-    else if (temp < 150) return [239, 247, 82];
-    else if (temp < 200) return [247, 170, 54];
-    else if (temp >= 200) return [255, 0, 0];
+    const gradient = [
+        [0, 192, 247],
+        [28, 182, 255],
+        [88, 168, 255],
+        [141, 150, 255],
+        [189, 127, 250],
+        [228, 97, 220],
+        [255, 57, 180],
+        [255, 0, 130],
+        [255, 0, 77],
+        [255, 5, 5],
+    ];
+
+    const minHeat = 0;
+    let maxHeat = 0.8 * getHottestSourceHeat();
+
+    if (temp < minHeat) return [0, 0, 0];
+
+    let minIndex = 0;
+    let maxIndex = gradient.length - 1;
+
+    const m = (maxIndex - minIndex) / (maxHeat - minHeat);
+    let index = Math.floor(m * temp);
+    if (index > maxIndex) index = maxIndex;
+
+    return gradient[index];
 }
 
 function convertTemperatureMatrixToTexture(tempMatrix) {
@@ -145,6 +165,17 @@ function getMatrixPosFromMousePos(e) {
     let stretchY = HEIGHT / size[1];
 
     return [Math.floor(y / stretchY), Math.floor(x / stretchX)];
+}
+
+function getHottestSourceHeat() {
+    let max = 0;
+    for (let i = 0; i < heatSources.length; i++) {
+        if (heatSources[i].heat > max) {
+            max = heatSources[i].heat;
+        }
+    }
+
+    return max;
 }
 
 // EVENTS
