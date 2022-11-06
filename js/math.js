@@ -12,6 +12,9 @@ var alpha;
 var beta;
 var xLength;
 var yLength;
+var E = 157.5;
+var gammaS = 0.3;
+var al = 25.6 * 10 ** -6;
 
 /*
 units: 
@@ -50,6 +53,13 @@ function diffusionStep(matrix) {
                     alpha * (math.max(matrix[j + 1][i], 0) + math.max(matrix[j - 1][i], 0)) +
                     beta * (math.max(matrix[j][i + 1], 0) + math.max(matrix[j][i - 1], 0)) +
                     (1 - 2 * alpha - 2 * beta) * math.max(matrix[j][i], 0);
+
+                //fissure genesis
+                var deltaTemp = math.abs(matrix[j][i] - newMatrix[j][i]);
+                var seuilCritique = (math.sqrt((2 * E * gammaS) / math.PI) * 1) / (E * al);
+                if (deltaTemp > seuilCritique) {
+                    newMatrix[j][i] = -2;
+                }
             } else newMatrix[j][i] = -1;
         }
     }
