@@ -235,7 +235,7 @@ renderer.domElement.addEventListener('mousedown', (e) => {
 });
 
 renderer.domElement.addEventListener('mouseup', (e) => {
-    document.body.style.cursor = 'auto';
+    // document.body.style.cursor = 'auto';
     dragging = false;
 });
 
@@ -260,6 +260,8 @@ renderer.domElement.addEventListener('mousemove', (e) => {
                 target.j = pos[1];
             }
         }
+    } else {
+        document.body.style.cursor = 'auto';
     }
 });
 
