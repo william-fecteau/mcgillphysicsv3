@@ -15,7 +15,8 @@ let delta, nbUpdate, clock;
 
 // State control
 let forme = 1;
-let stopAnimation, ajouterHeatSource, ajouterTrous, dragging, target;
+let isSimulationRunning = true;
+let ajouterHeatSource, ajouterTrous, dragging, target;
 
 // Temp matrix
 let tempMatrix, size;
@@ -35,14 +36,12 @@ camera.position.z = 2;
 const init = () => {
     clock = new THREE.Clock();
 
-    stopAnimation = true;
     // Clearing the scene
     while (scene.children.length > 0) {
         scene.remove(scene.children[0]);
     }
 
     // Set initial state
-    stopAnimation = false;
     ajouterHeatSource = false;
     ajouterTrous = false;
     dragging = false;
@@ -62,30 +61,35 @@ const init = () => {
     nbUpdate = 0;
 };
 
+function render() {
+    var textureResult = convertTemperatureMatrixToTexture(tempMatrix);
+
+    if (cube != null) scene.remove(cube);
+
+    var geometry = new THREE.BoxGeometry(WIDTH, HEIGHT, 0);
+    var material = new THREE.MeshBasicMaterial({
+        map: textureResult,
+    });
+    cube = new THREE.Mesh(geometry, material);
+    scene.add(cube);
+
+    renderer.render(scene, camera);
+}
+
 var update = function () {
-    if (stopAnimation) return;
-    requestAnimationFrame(update);
-    delta += clock.getDelta();
+    if (!isSimulationRunning) return;
 
     if (delta > 1 / FPS) {
         delta = delta % (1 / FPS);
 
         tempMatrix = compute(tempMatrix, heatSources);
-        var textureResult = convertTemperatureMatrixToTexture(tempMatrix);
-
-        if (cube != null) scene.remove(cube);
-
-        var geometry = new THREE.BoxGeometry(WIDTH, HEIGHT, 0);
-        var material = new THREE.MeshBasicMaterial({
-            map: textureResult,
-        });
-        cube = new THREE.Mesh(geometry, material);
-        scene.add(cube);
-
-        renderer.render(scene, camera);
+        render();
 
         nbUpdate++;
     }
+
+    requestAnimationFrame(update);
+    delta += clock.getDelta();
 };
 
 function mapTempToColor(temp) {
@@ -206,7 +210,6 @@ document.getElementById('rien').addEventListener('click', (e) => {
 
 document.getElementById('forme').addEventListener('change', (e) => {
     forme = e.target.value;
-    console.log(forme);
 });
 
 renderer.domElement.addEventListener('click', (e) => {
@@ -269,24 +272,23 @@ document.getElementById('slider').addEventListener('change', (e) => {
 document.getElementById('slider').value = heatSliderValue;
 
 const onPlayPauseClicked = () => {
-    stopAnimation = !stopAnimation;
+    isSimulationRunning = !isSimulationRunning;
     setPlayPauseIcon();
-    if (stopAnimation === false) update();
+    if (isSimulationRunning) update();
 };
 
 const setPlayPauseIcon = () => {
     let icon = './assets/pause.svg';
-    if (stopAnimation) {
+    if (!isSimulationRunning) {
         icon = './assets/play.svg';
     }
     document.getElementById('play-pause').src = icon;
 };
 
 const onRestartClicked = () => {
-    stopAnimation = true;
     init();
+    isSimulationRunning = true;
     requestAnimationFrame(update);
-    stopAnimation = false;
     setPlayPauseIcon();
 };
 
