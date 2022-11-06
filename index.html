@@ -30,29 +30,26 @@
     <body>
         <div class="three-js">
             <div class="three-js-renderer"></div>
-            <div id="simulation-info" class="d-flex justify-content-center">
-                <p id="simulation-info-content">ALLO</p>
-                <p></p>
-            </div>
+            <div id="simulation-info" class="d-flex justify-content-center"><p id="simulation-info-content"><p></div>
+                <div id="flow-control" class="d-flex justify-content-center">
+                    <button
+                        type="button"
+                        onclick="onPlayPauseClicked()"
+                        class="btn btn-dark d-block"
+                    >
+                        <img id="play-pause" src="./assets/pause.svg" class="white-icon" />
+                    </button>
+                    <button
+                        type="button"
+                        onclick="onRestartClicked()"
+                        class="btn btn-dark d-block"
+                    >
+                        <img src="./assets/restart.svg" class="white-icon" />
+                    </button>
+                </div>
         </div>
 
         <div class="menuwu col">
-            <div class="row row-width">
-                <button
-                    type="button"
-                    onclick="onPlayPauseClicked()"
-                    class="btn btn-dark btn-style col"
-                >
-                    <img id="play-pause" src="./assets/pause.svg" class="white-icon" />
-                </button>
-                <button
-                    type="button"
-                    onclick="onRestartClicked()"
-                    class="btn btn-dark btn-style col"
-                >
-                    <img src="./assets/restart.svg" class="white-icon" />
-                </button>
-            </div>
             <div class="row row-width">
                 <input
                     type="radio"

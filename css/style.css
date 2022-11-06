@@ -31,7 +31,7 @@ canvas {
 }
 
 .btn-style {
-    width: 100px;
+    width: 20px;
     margin: 3px;
 }
 
@@ -53,8 +53,13 @@ canvas {
 
 #simulation-info-content {
     background-color: rgba(0, 0, 0, .5);
-    width: 40%;
+    width: 28em;
     color: white;
     padding: 5px;
     text-align: center;
+    margin-bottom: 0;
+}
+
+#flow-control button {
+    margin: 0.2em;
 }
