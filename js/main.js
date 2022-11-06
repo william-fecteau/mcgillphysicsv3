@@ -1,7 +1,7 @@
 const FPS = 60;
 const HEIGHT = window.innerHeight * 0.75;
 const WIDTH = HEIGHT;
-const HEAT_SOURCE_POWER = 5000;
+const MAX_HEAT_SOURCE_POWER = 5000;
 const HEAT_SOURCE_RADIUS = 5;
 
 let scene = new THREE.Scene();
@@ -26,8 +26,8 @@ let heatSliderValue = 0;
 let heatSources = [];
 let geometryHeatSource = new THREE.CircleGeometry(HEAT_SOURCE_RADIUS);
 let materialHeatSource = new THREE.MeshBasicMaterial({ color: 0xffff00 });
-createHeatSource(50, 50, HEAT_SOURCE_POWER);
-createHeatSource(5, 5, HEAT_SOURCE_POWER);
+createHeatSource(50, 50, MAX_HEAT_SOURCE_POWER);
+createHeatSource(5, 5, MAX_HEAT_SOURCE_POWER);
 createHeatSource(80, 5, 500);
 
 // Setting up threejs
@@ -80,7 +80,7 @@ function mapTempToColor(temp) {
     ];
 
     const minHeat = 0;
-    let maxHeat = 0.8 * getHottestSourceHeat();
+    let maxHeat = 1.3 * MAX_HEAT_SOURCE_POWER;
 
     if (temp < minHeat) return [0, 0, 0];
 
@@ -168,17 +168,6 @@ function getMatrixPosFromMousePos(e) {
     return [Math.floor(y / stretchY), Math.floor(x / stretchX)];
 }
 
-function getHottestSourceHeat() {
-    let max = 0;
-    for (let i = 0; i < heatSources.length; i++) {
-        if (heatSources[i].heat > max) {
-            max = heatSources[i].heat;
-        }
-    }
-
-    return max;
-}
-
 // EVENTS
 
 document.getElementById('slider').disabled = true;
@@ -204,7 +193,7 @@ document.getElementById('rien').addEventListener('click', (e) => {
 renderer.domElement.addEventListener('click', (e) => {
     let mousePos = getMatrixPosFromMousePos(e);
     if (ajouterHeatSource) {
-        createHeatSource(mousePos[0], mousePos[1], HEAT_SOURCE_POWER);
+        createHeatSource(mousePos[0], mousePos[1], MAX_HEAT_SOURCE_POWER);
     }
 });
 
