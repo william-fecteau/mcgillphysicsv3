@@ -13,8 +13,9 @@ let mouse = new THREE.Vector2();
 
 // Ajout de trous actif
 let ajouterHeatSource = false;
-let ajouterTrous = true;
+let ajouterTrous = false;
 let dragging = false;
+let target;
 
 // Initialize temperature matrix
 let tempMatrix = initMatrix();
@@ -101,6 +102,7 @@ function createHole(e) {
     tempMatrix[pos[0]][pos[1] + 1] = -1;
     tempMatrix[pos[0] - 1][pos[1]] = -1;
     tempMatrix[pos[0]][pos[1] - 1] = -1;
+    ////////////////////////
     tempMatrix[pos[0] + 1][pos[1] + 1] = -1;
     tempMatrix[pos[0] + 1][pos[1] - 1] = -1;
     tempMatrix[pos[0] - 1][pos[1] + 1] = -1;
@@ -117,11 +119,11 @@ function createHeatSource(i, j, heat) {
 
     console.log(circle.position);
 
-    heatSources.push({
-        i: i,
-        j: j,
-        heat: heat,
-    });
+    circle.i = i;
+    circle.j = j;
+    circle.heat = heat;
+
+    heatSources.push(circle);
 
     return circle;
 }
@@ -151,19 +153,19 @@ function getMatrixPosFromMousePos(e) {
 document.getElementById('trous').addEventListener('click', (e) => {
     ajouterTrous = true;
     ajouterHeatSource = false;
-    console.log(ajouterTrous, ajouterHeatSource);
+    //console.log(ajouterTrous, ajouterHeatSource);
 });
 // Toggle heat source
 document.getElementById('source').addEventListener('click', (e) => {
     ajouterHeatSource = true;
     ajouterTrous = false;
-    console.log(ajouterTrous, ajouterHeatSource);
+    //console.log(ajouterTrous, ajouterHeatSource);
 });
 // Toggle rien
 document.getElementById('rien').addEventListener('click', (e) => {
     ajouterHeatSource = false;
     ajouterTrous = false;
-    console.log(ajouterTrous, ajouterHeatSource);
+    //console.log(ajouterTrous, ajouterHeatSource);
 });
 
 renderer.domElement.addEventListener('click', (e) => {
@@ -175,6 +177,21 @@ renderer.domElement.addEventListener('click', (e) => {
 
 renderer.domElement.addEventListener('mousedown', (e) => {
     dragging = true;
+
+    //identify close heat source
+    if (!ajouterHeatSource && !ajouterTrous) {
+        let pos = getMatrixPosFromMousePos(e);
+        let pos2 = getWorldPosFromMatrixPos(pos[0], pos[1]);
+        let mousePos = new THREE.Vector2(pos2[0], pos2[1]);
+        for (i = 0; i < heatSources.length; i++) {
+            console.log(pos2[0], pos2[1], heatSources[i].position);
+            let heatPoint = new THREE.Vector2(heatSources[i].position.x, heatSources[i].position.y);
+            if (mousePos.distanceTo(heatPoint) < HEAT_SOURCE_RADIUS) {
+                target = heatSources[i];
+                break;
+            } else target = null;
+        }
+    }
 });
 
 renderer.domElement.addEventListener('mouseup', (e) => {
@@ -185,9 +202,16 @@ renderer.domElement.addEventListener('mousemove', (e) => {
     if (dragging) {
         if (ajouterTrous) {
             createHole(e);
-        } /*else if (!ajouterHeatSource) {
-
-        }*/
+        } else if (!ajouterHeatSource) {
+            if (target) {
+                let pos = getMatrixPosFromMousePos(e);
+                let pos2 = getWorldPosFromMatrixPos(pos[0], pos[1]);
+                target.position.x = pos2[0] + HEAT_SOURCE_RADIUS / 2;
+                target.position.y = pos2[1] - HEAT_SOURCE_RADIUS / 2;
+                target.i = pos[0];
+                target.j = pos[1];
+            }
+        }
     }
 });
 
