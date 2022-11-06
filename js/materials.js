@@ -1,4 +1,4 @@
-[
+materials = [
     {
         Name: 'Aluminium',
         diffusionCoefficent: 97 * 10 ** -6,
