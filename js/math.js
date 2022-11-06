@@ -18,6 +18,7 @@ var al = 25.6 * 10 ** -6;
 
 var path = [];
 var unusedWeaknesses = [];
+var resolved = [];
 
 /*
 units: 
@@ -112,7 +113,7 @@ function initMatrix(matrixSize, delta, diffusionCoeff) {
 }
 
 function pathfinding(matrix, startCoords) {
-    path.push(startCoords);
+    resolved.push(startCoords);
     let startPoint = new THREE.Vector2(startCoords[0], startCoords[1]);
     let matrixSize = math.size(matrix);
     let closest = [50000000, 0, 0];
@@ -127,8 +128,8 @@ function pathfinding(matrix, startCoords) {
                 //closest non-used point
                 let found1 = false;
                 if (currentDist < closest[0]) {
-                    for (let k = 0; k < path.length; k++) {
-                        if (path[k][0] === i && path[k][1] === j) {
+                    for (let k = 0; k < resolved.length; k++) {
+                        if (resolved[k][0] === i && resolved[k][1] === j) {
                             found1 = true;
                             break;
                         }
@@ -143,7 +144,7 @@ function pathfinding(matrix, startCoords) {
         }
     }
     console.log('closest', closest);
-
+    path.push(startCoords);
     for (let i = 0; i < unusedWeaknesses.length; i++) {
         if (
             unusedWeaknesses[i][0] === startCoords[0] &&
