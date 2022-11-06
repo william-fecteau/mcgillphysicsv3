@@ -246,7 +246,7 @@ renderer.domElement.addEventListener('mouseup', (e) => {
 });*/
 
 renderer.domElement.addEventListener('mousemove', (e) => {
-    if (dragging) {
+    if (dragging && stopAnimation === false) {
         document.body.style.cursor = 'pointer';
         if (ajouterTrous) {
             createHole(e);
