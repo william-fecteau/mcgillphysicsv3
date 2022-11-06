@@ -16,6 +16,9 @@ var E = 157.5;
 var gammaS = 0.3;
 var al = 25.6 * 10 ** -6;
 
+var path = [];
+var unusedWeaknesses = [];
+
 /*
 units: 
 temperature: Kelvin
@@ -96,6 +99,50 @@ function initMatrix(matrixSize, delta, diffusionCoeff) {
     }
 
     return bigTestArray;
+}
+
+function pathfinding(matrix, startCoords) {
+    let startPoint = new THREE.Vector2(startCoords[0], startCoords[1]);
+    let matrixSize = math.size(matrix);
+    let closest;
+    closest.dist = 0;
+    for (i = 0; i < matrixSize[0]; i++) {
+        for (j = 0; j < matrixSize[1]; j++) {
+            if (matrix[i][j] === -1) {
+                let currentPoint = new THREE.Vector2(i, j);
+                let currentDist = currentPoint.distanceTo(startPoint);
+                //closest non-used point
+                if (currentDist < closest.dist) {
+                    for (k = 0; k < path.length; k++) {
+                        if (path[k][0] === i && path[k][1] === j) {
+                            closest.dist = currentDist;
+                            closest.i = i;
+                            closest.j = j;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    path.add(startCoords);
+    for (i = 0; i < unusedWeaknesses.length; i++) {
+        if (
+            unusedWeaknesses[i][0] === startCoords[0] &&
+            unusedWeaknesses[i][1] === startCoords[1]
+        ) {
+            unusedWeaknesses.splice(i, 1);
+            break;
+        }
+    }
+    for (i = 0; i < unusedWeaknesses.length; i++) {
+        if (unusedWeaknesses[i][0] === closest.i && unusedWeaknesses[i][1] === closest.j) {
+            pathfinding(matrix, closest);
+            break;
+        }
+    }
+    path.add(closest);
+    return;
 }
 
 function compute(oldStep, heatSources) {
