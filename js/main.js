@@ -16,7 +16,10 @@ let delta, nbUpdate, timeElapsedMs, clock;
 // State control
 let forme = 1;
 let isSimulationRunning = true;
-let ajouterHeatSource, ajouterTrous, dragging, target;
+let ajouterHeatSource = false;
+let ajouterTrous = false;
+let dragging = false;
+let target = null;
 
 // Temp matrix
 let tempMatrix, size;
@@ -42,9 +45,6 @@ const init = () => {
     }
 
     // Set initial state
-    ajouterHeatSource = false;
-    ajouterTrous = false;
-    dragging = false;
     target = null;
     cube = null;
 
@@ -120,7 +120,8 @@ function mapTempToColor(temp) {
     const minHeat = 0;
     let maxHeat = 0.8 * MAX_HEAT_SOURCE_POWER;
 
-    if (temp < minHeat) return [0, 0, 0];
+    if (temp < -1) return [122, 122, 122];
+    if (temp === -1) return [0, 0, 0];
 
     let minIndex = 0;
     let maxIndex = gradient.length - 1;
