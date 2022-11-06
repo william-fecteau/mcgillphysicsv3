@@ -133,3 +133,10 @@ canvas {
 .row-width > label {
     font-size: 12px !important;
 }
+
+
+#help {
+    position: absolute;
+    margin-left: 2em;
+    margin-top: 1em;
+}
