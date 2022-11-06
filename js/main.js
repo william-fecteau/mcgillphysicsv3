@@ -156,8 +156,8 @@ function convertTemperatureMatrixToTexture(tempMatrix) {
 
 function createHole(e) {
     let pos = getMatrixPosFromMousePos(e);
-    if (tempMatrix[pos[0]][pos[1]] != -1) {
-        tempMatrix[pos[0]][pos[1]] = -1;
+    if (tempMatrix[pos[0]][pos[1]] != -2) {
+        tempMatrix[pos[0]][pos[1]] = -2;
         unusedWeaknesses.push(pos);
     }
 }
