@@ -17,6 +17,7 @@ let delta, nbUpdate, timeElapsedMs, clock;
 let forme = 1;
 let isSimulationRunning = true;
 let ajouterHeatSource, ajouterTrous, dragging, target;
+let heatFracturationOn = false;
 
 // Temp matrix
 let tempMatrix, size;
@@ -322,6 +323,9 @@ document.getElementById('slider').addEventListener('change', (e) => {
     heatSliderValue = Number(e.target.value);
     document.getElementById('temp-slider-feedback').innerHTML =
         numberWithCommas(((heatSliderValue * MAX_HEAT_SOURCE_POWER) / 100).toFixed(2)) + ' K';
+});
+document.getElementById('fracturation').addEventListener('change', (e) => {
+    heatFracturationOn = e.target.checked;
 });
 document.getElementById('slider').value = heatSliderValue;
 
