@@ -4,6 +4,7 @@ body {
     width: 100%;
     height: 100%;
     background-color: black !important;
+    position: relative;
 }
 
 canvas {
@@ -67,4 +68,57 @@ canvas {
 .square {
     scale: 2;
     transform: translate(35%, 0);
+}
+
+
+#legend {
+    margin-top: 10px;
+    margin-right: 5em;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 4em;
+    height: 75vh;
+    text-align: center;
+}
+
+
+.legend-color {
+    height: 10%;
+}
+
+.legend-1 {
+    background-color: rgb(225, 5, 5);
+}
+
+.legend-2 {
+    background-color: rgb(245, 0, 7);
+}
+.legend-3 {
+    background-color: rgb(255, 20, 20);
+}
+.legend-4 {
+    background-color: rgb(255, 57, 10);
+}
+.legend-5 {
+    background-color: rgb(244, 108, 12);
+}
+.legend-6 {
+    background-color: rgb(244, 168, 40);
+}
+.legend-7 {
+    background-color: rgb(212, 255, 23);
+}
+.legend-8 {
+    background-color: rgb(88, 168, 255);
+}
+.legend-9 {
+    background-color: rgb(0, 114, 215);
+}
+.legend-10 {
+    background-color: rgb(0, 14, 215);
+}
+
+#pain {
+    margin: 0;
 }
