@@ -11,11 +11,12 @@ let renderer = new THREE.WebGLRenderer();
 let cube = null;
 
 // Time control
-let delta, nbUpdate, clock;
+let delta, nbUpdate, timeElapsedMs, clock;
 
 // State control
 let forme = 1;
-let stopAnimation, ajouterHeatSource, ajouterTrous, dragging, target;
+let isSimulationRunning = true;
+let ajouterHeatSource, ajouterTrous, dragging, target;
 
 // Temp matrix
 let tempMatrix, size;
@@ -27,7 +28,7 @@ const geometryHeatSource = new THREE.CircleGeometry(HEAT_SOURCE_RADIUS);
 const materialHeatSource = new THREE.MeshBasicMaterial({ color: 0xffff00 });
 
 // Setting up threejs
-let element = document.body.getElementsByClassName('three-js');
+let element = document.body.getElementsByClassName('three-js-renderer');
 element[0].appendChild(renderer.domElement);
 renderer.setSize(WIDTH, HEIGHT);
 camera.position.z = 2;
@@ -35,14 +36,12 @@ camera.position.z = 2;
 const init = () => {
     clock = new THREE.Clock();
 
-    stopAnimation = true;
     // Clearing the scene
     while (scene.children.length > 0) {
         scene.remove(scene.children[0]);
     }
 
     // Set initial state
-    stopAnimation = false;
     ajouterHeatSource = false;
     ajouterTrous = false;
     dragging = false;
@@ -60,50 +59,62 @@ const init = () => {
     // Time control
     delta = 0;
     nbUpdate = 0;
+    timeElapsedMs = 0;
 };
 
-var update = function () {
-    if (stopAnimation) return;
-    requestAnimationFrame(update);
-    delta += clock.getDelta();
+function render() {
+    var textureResult = convertTemperatureMatrixToTexture(tempMatrix);
 
+    if (cube != null) scene.remove(cube);
+
+    var geometry = new THREE.BoxGeometry(WIDTH, HEIGHT, 0);
+    var material = new THREE.MeshBasicMaterial({
+        map: textureResult,
+    });
+    cube = new THREE.Mesh(geometry, material);
+    scene.add(cube);
+
+    renderer.render(scene, camera);
+}
+
+var update = function () {
     if (delta > 1 / FPS) {
         delta = delta % (1 / FPS);
 
-        tempMatrix = compute(tempMatrix, heatSources);
-        var textureResult = convertTemperatureMatrixToTexture(tempMatrix);
-
-        if (cube != null) scene.remove(cube);
-
-        if (path.length > 0) {
-            fissure(tempMatrix);
+        if (isSimulationRunning) {
+            tempMatrix = compute(tempMatrix, heatSources);
+            timeElapsedMs += deltaTime * 1000;
         }
 
-        var geometry = new THREE.BoxGeometry(WIDTH, HEIGHT, 0);
-        var material = new THREE.MeshBasicMaterial({
-            map: textureResult,
-        });
-        cube = new THREE.Mesh(geometry, material);
-        scene.add(cube);
+        let temperatureAvg = computeTempMatrixAvg(tempMatrix);
+        document.getElementById('simulation-info-content').innerHTML =
+            'Avg temp.: ' +
+            temperatureAvg.toFixed(2) +
+            ' K - Time elapsed: ' +
+            timeElapsedMs.toFixed(2) +
+            ' ms';
 
-        renderer.render(scene, camera);
+        render();
 
         nbUpdate++;
     }
+
+    requestAnimationFrame(update);
+    delta += clock.getDelta();
 };
 
 function mapTempToColor(temp) {
     const gradient = [
-        [0, 192, 247],
-        [28, 182, 255],
+        [0, 14, 215],
+        [0, 114, 215],
         [88, 168, 255],
-        [141, 150, 255],
-        [189, 127, 250],
-        [228, 97, 220],
-        [255, 57, 180],
-        [255, 0, 130],
-        [255, 0, 77],
-        [255, 5, 5],
+        [212, 255, 23],
+        [244, 168, 40],
+        [244, 108, 12],
+        [255, 57, 10],
+        [255, 20, 20],
+        [245, 0, 7],
+        [225, 5, 5],
     ];
 
     const minHeat = 0;
@@ -186,6 +197,22 @@ function getMatrixPosFromMousePos(e) {
     return [Math.floor(y / stretchY), Math.floor(x / stretchX)];
 }
 
+function computeTempMatrixAvg(tempMatrix) {
+    let sum = 0;
+    let count = 0;
+
+    for (let i = 0; i < size[0]; i++) {
+        for (let j = 0; j < size[1]; j++) {
+            if (tempMatrix[i][j] >= 0) {
+                sum += tempMatrix[i][j];
+                count++;
+            }
+        }
+    }
+
+    return sum / count;
+}
+
 // EVENTS
 
 document.getElementById('slider').disabled = true;
@@ -210,7 +237,6 @@ document.getElementById('rien').addEventListener('click', (e) => {
 
 document.getElementById('forme').addEventListener('change', (e) => {
     forme = e.target.value;
-    console.log(forme);
 });
 
 renderer.domElement.addEventListener('click', (e) => {
@@ -239,7 +265,7 @@ renderer.domElement.addEventListener('mousedown', (e) => {
 });
 
 renderer.domElement.addEventListener('mouseup', (e) => {
-    document.body.style.cursor = 'auto';
+    // document.body.style.cursor = 'auto';
     dragging = false;
 });
 
@@ -250,7 +276,7 @@ renderer.domElement.addEventListener('mouseup', (e) => {
 });*/
 
 renderer.domElement.addEventListener('mousemove', (e) => {
-    if (dragging && stopAnimation === false) {
+    if (dragging) {
         document.body.style.cursor = 'pointer';
         if (ajouterTrous) {
             createHole(e);
@@ -264,6 +290,8 @@ renderer.domElement.addEventListener('mousemove', (e) => {
                 target.j = pos[1];
             }
         }
+    } else {
+        document.body.style.cursor = 'auto';
     }
 });
 
@@ -273,24 +301,21 @@ document.getElementById('slider').addEventListener('change', (e) => {
 document.getElementById('slider').value = heatSliderValue;
 
 const onPlayPauseClicked = () => {
-    stopAnimation = !stopAnimation;
+    isSimulationRunning = !isSimulationRunning;
     setPlayPauseIcon();
-    if (stopAnimation === false) update();
+    if (isSimulationRunning) update();
 };
 
 const setPlayPauseIcon = () => {
     let icon = './assets/pause.svg';
-    if (stopAnimation) {
+    if (!isSimulationRunning) {
         icon = './assets/play.svg';
     }
     document.getElementById('play-pause').src = icon;
 };
 
 const onRestartClicked = () => {
-    stopAnimation = true;
     init();
-    requestAnimationFrame(update);
-    stopAnimation = false;
     setPlayPauseIcon();
 };
 

@@ -50,3 +50,11 @@ canvas {
     width: 36px;
     height: 36px;
 }
+
+#simulation-info-content {
+    background-color: rgba(0, 0, 0, .5);
+    width: 40%;
+    color: white;
+    padding: 5px;
+    text-align: center;
+}

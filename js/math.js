@@ -89,6 +89,7 @@ function initMatrix(matrixSize, delta, diffusionCoeff) {
     //create empty matrix
     var bigTestArray = [];
     // la forme se calcule avant le play donc prend amogus tt le temps par default
+    forme = Number(forme);
     if (forme === 1) {
         bigTestArray = getAmogus();
     } else if (forme === 2) {
@@ -99,6 +100,8 @@ function initMatrix(matrixSize, delta, diffusionCoeff) {
         bigTestArray = getMonke();
     } else if (forme === 5) {
         bigTestArray = getTrollface();
+    } else {
+        bigTestArray = math.zeros([matrixSize, matrixSize]);
     }
 
     //border generation
