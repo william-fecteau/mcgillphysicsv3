@@ -82,11 +82,19 @@ function initMatrix(matrixSize, delta, diffusionCoeff) {
     yLength = matrixSize;
 
     //create empty matrix
-    // var bigTestArray = getAmogus();
-    // var bigTestArray = getDonut();
-    var bigTestArray = getH();
-    // var bigTestArray = getMonke();
-    // var bigTestArray = getTrollface();
+    var bigTestArray = [];
+    // la forme se calcule avant le play donc prend amogus tt le temps par default
+    if (forme === 1) {
+        bigTestArray = getAmogus();
+    } else if (forme === 2) {
+        bigTestArray = getDonut();
+    } else if (forme === 3) {
+        bigTestArray = getH();
+    } else if (forme === 4) {
+        bigTestArray = getMonke();
+    } else if (forme === 5) {
+        bigTestArray = getTrollface();
+    }
 
     //border generation
     for (let i = 0; i < matrixSize; i++) {
