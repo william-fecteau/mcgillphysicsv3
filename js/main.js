@@ -70,6 +70,10 @@ function render() {
 
     if (cube != null) scene.remove(cube);
 
+    if (path.length > 1) {
+        fissure(tempMatrix);
+    }
+
     var geometry = new THREE.BoxGeometry(WIDTH, HEIGHT, 0);
     var material = new THREE.MeshBasicMaterial({
         map: textureResult,
@@ -273,6 +277,9 @@ renderer.domElement.addEventListener('click', (e) => {
     if (ajouterHeatSource) {
         createHeatSource(mousePos[0], mousePos[1], (heatSliderValue * MAX_HEAT_SOURCE_POWER) / 100);
     }
+    if (ajouterTrous) {
+        createHole(e);
+    }
 });
 
 renderer.domElement.addEventListener('mousedown', (e) => {
@@ -298,11 +305,13 @@ renderer.domElement.addEventListener('mouseup', (e) => {
     dragging = false;
 });
 
-/*renderer.domElement.addEventListener('dblclick', (e) => {
-    let pos = getMatrixPosFromMousePos(e);
-    path = [];
-    pathfinding(tempMatrix, [pos[0], pos[1]]);
-});*/
+renderer.domElement.addEventListener('dblclick', (e) => {
+    if (!ajouterHeatSource && !ajouterTrous) {
+        let pos = getMatrixPosFromMousePos(e);
+        path = [];
+        pathfinding(tempMatrix, [pos[0], pos[1]]);
+    }
+});
 
 renderer.domElement.addEventListener('mousemove', (e) => {
     if (dragging) {
@@ -318,6 +327,13 @@ renderer.domElement.addEventListener('mousemove', (e) => {
                 target.i = pos[0];
                 target.j = pos[1];
             }
+        } else {
+            let mousePos = getMatrixPosFromMousePos(e);
+            createHeatSource(
+                mousePos[0],
+                mousePos[1],
+                (heatSliderValue * MAX_HEAT_SOURCE_POWER) / 100
+            );
         }
     } else {
         document.body.style.cursor = 'auto';
