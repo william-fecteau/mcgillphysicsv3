@@ -61,11 +61,12 @@ function diffusionStep(matrix) {
                     (1 - 2 * alpha - 2 * beta) * math.max(matrix[j][i], 0);
 
                 //fissure genesis
-                var deltaTemp = math.abs(matrix[j][i] - newMatrix[j][i]);
+                var deltaTemp = math.abs(math.max(matrix[j][i], 0) - math.max(newMatrix[j][i], 0));
                 var seuilCritique = (math.sqrt((2 * E * gammaS) / math.PI) * 1) / (E * al);
 
                 if (deltaTemp > seuilCritique) {
                     newMatrix[j][i] = -1;
+                    matrix[j][i] = -1;
                     unusedWeaknesses.push([j, i]);
 
                     path = [];
@@ -138,7 +139,7 @@ function pathfinding(matrix, startCoords) {
     //finding closest
     for (let i = 0; i < matrixSize[0]; i++) {
         for (let j = 0; j < matrixSize[1]; j++) {
-            if (matrix[i][j] === -2) {
+            if (matrix[i][j] === -1) {
                 let currentPoint = new THREE.Vector2(i, j);
                 let currentDist = currentPoint.distanceTo(startPoint);
                 //console.log('b', currentPoint, startPoint);
