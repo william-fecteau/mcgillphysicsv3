@@ -11,7 +11,7 @@ const init = () => {
     clock = new THREE.Clock();
     mouse = new THREE.Vector2();
 
-    stopAnimation = false;
+    stopAnimation = true;
 
     // Ajout de trous actif
     ajouterHeatSource = false;
@@ -287,13 +287,18 @@ document.getElementById('slider').addEventListener('change', (e) => {
 });
 document.getElementById('slider').value = heatSliderValue;
 
-const onPlayClicked = () => {
-    stopAnimation = false;
-    update();
+const onPlayPauseClicked = () => {
+    stopAnimation = !stopAnimation;
+    setPlayPauseIcon();
+    if (stopAnimation === false) update();
 };
 
-const onPauseClicked = () => {
-    stopAnimation = true;
+const setPlayPauseIcon = () => {
+    let icon = './assets/pause.svg';
+    if (stopAnimation) {
+        icon = './assets/play.svg';
+    }
+    document.getElementById('play-pause').src = icon;
 };
 
 const onRestartClicked = () => {
