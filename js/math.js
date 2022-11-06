@@ -61,11 +61,12 @@ function diffusionStep(matrix) {
                     (1 - 2 * alpha - 2 * beta) * math.max(matrix[j][i], 0);
 
                 //fissure genesis
-                var deltaTemp = math.abs(matrix[j][i] - newMatrix[j][i]);
+                var deltaTemp = math.abs(math.max(matrix[j][i], 0) - math.max(newMatrix[j][i], 0));
                 var seuilCritique = (math.sqrt((2 * E * gammaS) / math.PI) * 1) / (E * al);
 
                 if (deltaTemp > seuilCritique) {
                     newMatrix[j][i] = -1;
+                    matrix[j][i] = -1;
                     unusedWeaknesses.push([j, i]);
 
                     path = [];
