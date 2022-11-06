@@ -96,6 +96,8 @@ function initMatrix(matrixSize, delta, diffusionCoeff) {
         bigTestArray = getMonke();
     } else if (forme === 5) {
         bigTestArray = getTrollface();
+    } else {
+        bigTestArray = math.zeros([matrixSize, matrixSize]);
     }
 
     //border generation
