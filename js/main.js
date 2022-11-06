@@ -240,5 +240,6 @@ renderer.domElement.addEventListener('mousemove', (e) => {
 document.getElementById('slider').addEventListener('change', (e) => {
     heatSliderValue = e.target.value;
 });
+document.getElementById('slider').value = heatSliderValue;
 // Start update loop
 update();
