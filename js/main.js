@@ -36,7 +36,7 @@ const init = () => {
     delta = 0;
     nbUpdate = 0;
 };
-
+let forme = 1;
 let scene = new THREE.Scene();
 let camera = new THREE.OrthographicCamera(WIDTH / -2, WIDTH / 2, HEIGHT / 2, HEIGHT / -2, 1, 1000);
 let raycaster = new THREE.Raycaster();
@@ -218,6 +218,11 @@ document.getElementById('rien').addEventListener('click', (e) => {
     ajouterHeatSource = false;
     ajouterTrous = false;
     document.getElementById('slider').disabled = true;
+});
+
+document.getElementById('forme').addEventListener('change', (e) => {
+    forme = e.target.value;
+    console.log(forme);
 });
 
 renderer.domElement.addEventListener('click', (e) => {
