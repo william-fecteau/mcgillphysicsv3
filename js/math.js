@@ -13,7 +13,7 @@ var beta;
 var xLength;
 var yLength;
 var E = 157.5;
-var gammaS = 0.3;
+var gammaS = 0.3 * 10 ** 6;
 var al = 25.6 * 10 ** -6;
 
 var path = [];
@@ -61,7 +61,8 @@ function diffusionStep(matrix) {
                 var deltaTemp = math.abs(matrix[j][i] - newMatrix[j][i]);
                 var seuilCritique = (math.sqrt((2 * E * gammaS) / math.PI) * 1) / (E * al);
                 if (deltaTemp > seuilCritique) {
-                    newMatrix[j][i] = -2;
+                    newMatrix[j][i] = -1;
+                    unusedWeaknesses.push([j, i]);
                 }
             } else newMatrix[j][i] = -1;
         }
@@ -102,31 +103,39 @@ function initMatrix(matrixSize, delta, diffusionCoeff) {
 }
 
 function pathfinding(matrix, startCoords) {
+    path.push(startCoords);
     let startPoint = new THREE.Vector2(startCoords[0], startCoords[1]);
     let matrixSize = math.size(matrix);
-    let closest;
-    closest.dist = 0;
-    for (i = 0; i < matrixSize[0]; i++) {
-        for (j = 0; j < matrixSize[1]; j++) {
+    let closest = [50000000, 0, 0];
+    console.log('a', closest, startPoint);
+    //finding closest
+    for (let i = 0; i < matrixSize[0]; i++) {
+        for (let j = 0; j < matrixSize[1]; j++) {
             if (matrix[i][j] === -1) {
                 let currentPoint = new THREE.Vector2(i, j);
                 let currentDist = currentPoint.distanceTo(startPoint);
+                //console.log('b', currentPoint, startPoint);
                 //closest non-used point
-                if (currentDist < closest.dist) {
-                    for (k = 0; k < path.length; k++) {
+                let found1 = false;
+                if (currentDist < closest[0]) {
+                    for (let k = 0; k < path.length; k++) {
                         if (path[k][0] === i && path[k][1] === j) {
-                            closest.dist = currentDist;
-                            closest.i = i;
-                            closest.j = j;
+                            found1 = true;
                             break;
                         }
+                    }
+                    if (!found1) {
+                        closest[0] = currentDist;
+                        closest[1] = i;
+                        closest[2] = j;
                     }
                 }
             }
         }
     }
-    path.add(startCoords);
-    for (i = 0; i < unusedWeaknesses.length; i++) {
+    console.log('closest', closest);
+
+    for (let i = 0; i < unusedWeaknesses.length; i++) {
         if (
             unusedWeaknesses[i][0] === startCoords[0] &&
             unusedWeaknesses[i][1] === startCoords[1]
@@ -135,13 +144,18 @@ function pathfinding(matrix, startCoords) {
             break;
         }
     }
-    for (i = 0; i < unusedWeaknesses.length; i++) {
-        if (unusedWeaknesses[i][0] === closest.i && unusedWeaknesses[i][1] === closest.j) {
-            pathfinding(matrix, closest);
+    let found = false;
+    for (let i = 0; i < unusedWeaknesses.length; i++) {
+        if (unusedWeaknesses[i][0] === closest[1] && unusedWeaknesses[i][1] === closest[2]) {
+            pathfinding(matrix, [closest[1], closest[2]]);
+            found = true;
             break;
         }
     }
-    path.add(closest);
+    if (!found) {
+        path.push([closest[1], closest[2]]);
+        console.log(unusedWeaknesses, path);
+    }
     return;
 }
 
@@ -151,6 +165,5 @@ function compute(oldStep, heatSources) {
 
         oldStep[heatSources[i].i][heatSources[i].j] += heatSources[i].heat;
     }
-
     return diffusionStep(oldStep);
 }
