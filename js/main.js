@@ -246,6 +246,7 @@ document.getElementById('rien').addEventListener('click', (e) => {
 
 document.getElementById('forme').addEventListener('change', (e) => {
     forme = e.target.value;
+    onRestartClicked();
 });
 
 document.getElementById('material').addEventListener('change', (e) => {
@@ -256,7 +257,7 @@ document.getElementById('material').addEventListener('change', (e) => {
     al = currentMat.al;
     diffusionCoefficent = currentMat.diffusionCoefficent;
 
-    console.log(E, gammaS, al, diffusionCoefficent);
+    onRestartClicked();
 });
 
 renderer.domElement.addEventListener('click', (e) => {
