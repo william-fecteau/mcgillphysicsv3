@@ -193,7 +193,7 @@ document.getElementById('rien').addEventListener('click', (e) => {
 renderer.domElement.addEventListener('click', (e) => {
     let mousePos = getMatrixPosFromMousePos(e);
     if (ajouterHeatSource) {
-        createHeatSource(mousePos[0], mousePos[1], MAX_HEAT_SOURCE_POWER);
+        createHeatSource(mousePos[0], mousePos[1], (heatSliderValue * MAX_HEAT_SOURCE_POWER) / 100);
     }
 });
 
