@@ -18,6 +18,7 @@ var al = 25.6 * 10 ** -6;
 
 var path = [];
 var unusedWeaknesses = [];
+var resolved = [];
 
 /*
 units: 
@@ -82,11 +83,19 @@ function initMatrix(matrixSize, delta, diffusionCoeff) {
     yLength = matrixSize;
 
     //create empty matrix
-    // var bigTestArray = getAmogus();
-    // var bigTestArray = getDonut();
-    var bigTestArray = getH();
-    // var bigTestArray = getMonke();
-    // var bigTestArray = getTrollface();
+    var bigTestArray = [];
+    // la forme se calcule avant le play donc prend amogus tt le temps par default
+    if (forme === 1) {
+        bigTestArray = getAmogus();
+    } else if (forme === 2) {
+        bigTestArray = getDonut();
+    } else if (forme === 3) {
+        bigTestArray = getH();
+    } else if (forme === 4) {
+        bigTestArray = getMonke();
+    } else if (forme === 5) {
+        bigTestArray = getTrollface();
+    }
 
     //border generation
     for (let i = 0; i < matrixSize; i++) {
@@ -103,7 +112,7 @@ function initMatrix(matrixSize, delta, diffusionCoeff) {
 }
 
 function pathfinding(matrix, startCoords) {
-    path.push(startCoords);
+    resolved.push(startCoords);
     let startPoint = new THREE.Vector2(startCoords[0], startCoords[1]);
     let matrixSize = math.size(matrix);
     let closest = [50000000, 0, 0];
@@ -118,8 +127,8 @@ function pathfinding(matrix, startCoords) {
                 //closest non-used point
                 let found1 = false;
                 if (currentDist < closest[0]) {
-                    for (let k = 0; k < path.length; k++) {
-                        if (path[k][0] === i && path[k][1] === j) {
+                    for (let k = 0; k < resolved.length; k++) {
+                        if (resolved[k][0] === i && resolved[k][1] === j) {
                             found1 = true;
                             break;
                         }
@@ -134,7 +143,7 @@ function pathfinding(matrix, startCoords) {
         }
     }
     console.log('closest', closest);
-
+    path.push(startCoords);
     for (let i = 0; i < unusedWeaknesses.length; i++) {
         if (
             unusedWeaknesses[i][0] === startCoords[0] &&

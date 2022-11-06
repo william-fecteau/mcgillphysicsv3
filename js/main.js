@@ -4,29 +4,28 @@ const WIDTH = HEIGHT;
 const MAX_HEAT_SOURCE_POWER = 5000;
 const HEAT_SOURCE_RADIUS = 5;
 
+// Threejs variables
 let scene = new THREE.Scene();
 let camera = new THREE.OrthographicCamera(WIDTH / -2, WIDTH / 2, HEIGHT / 2, HEIGHT / -2, 1, 1000);
-let raycaster = new THREE.Raycaster();
 let renderer = new THREE.WebGLRenderer();
-let clock = new THREE.Clock();
-let mouse = new THREE.Vector2();
+let cube = null;
 
-// Ajout de trous actif
-let ajouterHeatSource = false;
-let ajouterTrous = false;
-let dragging = false;
-let target;
+// Time control
+let delta, nbUpdate, clock;
 
-// Initialize temperature matrix
-let tempMatrix = initMatrix(100, 0.0001, 165 * 10 ** -6);
-let size = math.size(tempMatrix);
+// State control
+let forme = 1;
+let isSimulationRunning = true;
+let ajouterHeatSource, ajouterTrous, dragging, target;
 
-// Heat source
-let heatSliderValue = 0;
-let heatSources = [];
-let geometryHeatSource = new THREE.CircleGeometry(HEAT_SOURCE_RADIUS);
-let materialHeatSource = new THREE.MeshBasicMaterial({ color: 0xffff00 });
-createHeatSource(50, 50, MAX_HEAT_SOURCE_POWER);
+// Temp matrix
+let tempMatrix, size;
+
+// Heat sources
+let heatSliderValue = 0.5;
+let heatSources;
+const geometryHeatSource = new THREE.CircleGeometry(HEAT_SOURCE_RADIUS);
+const materialHeatSource = new THREE.MeshBasicMaterial({ color: 0xffff00 });
 
 // Setting up threejs
 let element = document.body.getElementsByClassName('three-js');
@@ -34,32 +33,62 @@ element[0].appendChild(renderer.domElement);
 renderer.setSize(WIDTH, HEIGHT);
 camera.position.z = 2;
 
-let cube = null;
-let delta = 0;
-let nbUpdate = 0;
-var update = function () {
-    requestAnimationFrame(update);
-    delta += clock.getDelta();
+const init = () => {
+    clock = new THREE.Clock();
 
+    // Clearing the scene
+    while (scene.children.length > 0) {
+        scene.remove(scene.children[0]);
+    }
+
+    // Set initial state
+    ajouterHeatSource = false;
+    ajouterTrous = false;
+    dragging = false;
+    target = null;
+    cube = null;
+
+    // Initialize temperature matrix
+    tempMatrix = initMatrix(100, 0.0001, 165 * 10 ** -6);
+    size = math.size(tempMatrix);
+
+    // Heat sources
+    heatSources = [];
+    createHeatSource(50, 50, MAX_HEAT_SOURCE_POWER);
+
+    // Time control
+    delta = 0;
+    nbUpdate = 0;
+};
+
+function render() {
+    var textureResult = convertTemperatureMatrixToTexture(tempMatrix);
+
+    if (cube != null) scene.remove(cube);
+
+    var geometry = new THREE.BoxGeometry(WIDTH, HEIGHT, 0);
+    var material = new THREE.MeshBasicMaterial({
+        map: textureResult,
+    });
+    cube = new THREE.Mesh(geometry, material);
+    scene.add(cube);
+
+    renderer.render(scene, camera);
+}
+
+var update = function () {
     if (delta > 1 / FPS) {
         delta = delta % (1 / FPS);
 
-        tempMatrix = compute(tempMatrix, heatSources);
-        var textureResult = convertTemperatureMatrixToTexture(tempMatrix);
+        if (isSimulationRunning) tempMatrix = compute(tempMatrix, heatSources);
 
-        if (cube != null) scene.remove(cube);
-
-        var geometry = new THREE.BoxGeometry(WIDTH, HEIGHT, 0);
-        var material = new THREE.MeshBasicMaterial({
-            map: textureResult,
-        });
-        cube = new THREE.Mesh(geometry, material);
-        scene.add(cube);
-
-        renderer.render(scene, camera);
+        render();
 
         nbUpdate++;
     }
+
+    requestAnimationFrame(update);
+    delta += clock.getDelta();
 };
 
 function mapTempToColor(temp) {
@@ -119,15 +148,6 @@ function createHole(e) {
         tempMatrix[pos[0]][pos[1]] = -1;
         unusedWeaknesses.push(pos);
     }
-    /*tempMatrix[pos[0] + 1][pos[1]] = -1;
-    tempMatrix[pos[0]][pos[1] + 1] = -1;
-    tempMatrix[pos[0] - 1][pos[1]] = -1;
-    tempMatrix[pos[0]][pos[1] - 1] = -1;
-    ////////////////////////
-    tempMatrix[pos[0] + 1][pos[1] + 1] = -1;
-    tempMatrix[pos[0] + 1][pos[1] - 1] = -1;
-    tempMatrix[pos[0] - 1][pos[1] + 1] = -1;
-    tempMatrix[pos[0] - 1][pos[1] - 1] = -1;*/
 }
 
 function createHeatSource(i, j, heat) {
@@ -187,6 +207,10 @@ document.getElementById('rien').addEventListener('click', (e) => {
     document.getElementById('slider').disabled = true;
 });
 
+document.getElementById('forme').addEventListener('change', (e) => {
+    forme = e.target.value;
+});
+
 renderer.domElement.addEventListener('click', (e) => {
     let mousePos = getMatrixPosFromMousePos(e);
     if (ajouterHeatSource) {
@@ -213,6 +237,7 @@ renderer.domElement.addEventListener('mousedown', (e) => {
 });
 
 renderer.domElement.addEventListener('mouseup', (e) => {
+    document.body.style.cursor = 'auto';
     dragging = false;
 });
 
@@ -224,6 +249,7 @@ renderer.domElement.addEventListener('mouseup', (e) => {
 
 renderer.domElement.addEventListener('mousemove', (e) => {
     if (dragging) {
+        document.body.style.cursor = 'pointer';
         if (ajouterTrous) {
             createHole(e);
         } else if (!ajouterHeatSource) {
@@ -242,5 +268,27 @@ renderer.domElement.addEventListener('mousemove', (e) => {
 document.getElementById('slider').addEventListener('change', (e) => {
     heatSliderValue = e.target.value;
 });
+document.getElementById('slider').value = heatSliderValue;
+
+const onPlayPauseClicked = () => {
+    isSimulationRunning = !isSimulationRunning;
+    setPlayPauseIcon();
+    if (isSimulationRunning) update();
+};
+
+const setPlayPauseIcon = () => {
+    let icon = './assets/pause.svg';
+    if (!isSimulationRunning) {
+        icon = './assets/play.svg';
+    }
+    document.getElementById('play-pause').src = icon;
+};
+
+const onRestartClicked = () => {
+    init();
+    setPlayPauseIcon();
+};
+
 // Start update loop
+init();
 update();
