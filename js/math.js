@@ -12,9 +12,11 @@ var alpha;
 var beta;
 var xLength;
 var yLength;
+
 var E = 157.5;
 var gammaS = 0.3 * 10 ** 0;
 var al = 25.6 * 10 ** -6;
+var diffusionCoefficent = 165 * 10 ** -6;
 
 var path = [];
 var unusedWeaknesses = [];
@@ -85,13 +87,13 @@ function diffusionStep(matrix) {
     return newMatrix;
 }
 
-function initMatrix(matrixSize, delta, diffusionCoeff) {
+function initMatrix(matrixSize, delta) {
     //initialise diffusion eq data
     deltaX = delta;
     deltaY = delta;
-    deltaTime = 0.95 * (deltaX ** 2 / (4 * diffusionCoeff));
-    alpha = (diffusionCoeff * deltaTime) / deltaX ** 2;
-    beta = (diffusionCoeff * deltaTime) / deltaY ** 2;
+    deltaTime = 0.95 * (deltaX ** 2 / (4 * diffusionCoefficent));
+    alpha = (diffusionCoefficent * deltaTime) / deltaX ** 2;
+    beta = (diffusionCoefficent * deltaTime) / deltaY ** 2;
     xLength = matrixSize;
     yLength = matrixSize;
 

@@ -49,7 +49,7 @@ const init = () => {
     cube = null;
 
     // Initialize temperature matrix
-    tempMatrix = initMatrix(100, 0.0001, 165 * 10 ** -6);
+    tempMatrix = initMatrix(100, 0.0001);
     size = math.size(tempMatrix);
 
     // Heat sources
@@ -220,27 +220,43 @@ function numberWithCommas(x) {
 // EVENTS
 
 document.getElementById('slider').disabled = true;
+document.getElementById('slider-div').hidden = true;
+document.getElementById('forme').value = forme;
 // Toggle trous
 document.getElementById('trous').addEventListener('click', (e) => {
     ajouterTrous = true;
     ajouterHeatSource = false;
     document.getElementById('slider').disabled = true;
+    document.getElementById('slider-div').hidden = true;
 });
 // Toggle heat source
 document.getElementById('source').addEventListener('click', (e) => {
     ajouterHeatSource = true;
     ajouterTrous = false;
     document.getElementById('slider').disabled = false;
+    document.getElementById('slider-div').hidden = false;
 });
 // Toggle rien
 document.getElementById('rien').addEventListener('click', (e) => {
     ajouterHeatSource = false;
     ajouterTrous = false;
     document.getElementById('slider').disabled = true;
+    document.getElementById('slider-div').hidden = true;
 });
 
 document.getElementById('forme').addEventListener('change', (e) => {
     forme = e.target.value;
+});
+
+document.getElementById('material').addEventListener('change', (e) => {
+    currentMat = materials[e.target.value];
+
+    E = currentMat.E;
+    gammaS = currentMat.gammaS;
+    al = currentMat.al;
+    diffusionCoefficent = currentMat.diffusionCoefficent;
+
+    console.log(E, gammaS, al, diffusionCoefficent);
 });
 
 renderer.domElement.addEventListener('click', (e) => {
@@ -300,7 +316,7 @@ renderer.domElement.addEventListener('mousemove', (e) => {
 });
 
 document.getElementById('slider').addEventListener('change', (e) => {
-    heatSliderValue = e.target.value;
+    heatSliderValue = Number(e.target.value);
 });
 document.getElementById('slider').value = heatSliderValue;
 
