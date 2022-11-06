@@ -380,7 +380,7 @@ update();
 document.addEventListener('DOMContentLoaded', (event) => {
     let visited = getCookie('visited');
     if (visited === '') {
-        var myModal = new bootstrap.Modal(document.getElementById('modal'));
+        var myModal = new bootstrap.Modal(document.getElementById('modalInfo'));
         myModal.toggle();
         document.cookie = 'visited=true; expires=Thu, 18 Dec 2100 12:00:00 UTC';
     }
