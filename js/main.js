@@ -151,7 +151,10 @@ function convertTemperatureMatrixToTexture(tempMatrix) {
 
 function createHole(e) {
     let pos = getMatrixPosFromMousePos(e);
-    tempMatrix[pos[0]][pos[1]] = -1;
+    if (tempMatrix[pos[0]][pos[1]] != -1) {
+        tempMatrix[pos[0]][pos[1]] = -1;
+        unusedWeaknesses.push(pos);
+    }
     /*tempMatrix[pos[0] + 1][pos[1]] = -1;
     tempMatrix[pos[0]][pos[1] + 1] = -1;
     tempMatrix[pos[0] - 1][pos[1]] = -1;
@@ -254,6 +257,12 @@ renderer.domElement.addEventListener('mouseup', (e) => {
     document.body.style.cursor = 'auto';
     dragging = false;
 });
+
+/*renderer.domElement.addEventListener('dblclick', (e) => {
+    let pos = getMatrixPosFromMousePos(e);
+    path = [];
+    pathfinding(tempMatrix, [pos[0], pos[1]]);
+});*/
 
 renderer.domElement.addEventListener('mousemove', (e) => {
     if (dragging) {
