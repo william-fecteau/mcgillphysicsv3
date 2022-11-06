@@ -12,7 +12,8 @@ let clock = new THREE.Clock();
 let mouse = new THREE.Vector2();
 
 // Ajout de trous actif
-let enTrainDajouterDesTrous = false;
+let ajouterHeatSource = false;
+let ajouterTrous = true;
 let dragging = false;
 
 // Initialize temperature matrix
@@ -177,17 +178,30 @@ function getHottestSourceHeat() {
 
 // EVENTS
 
-// varible qui contient le state et id du toggler html
-const toggleVarFromButton = (variable, id) => {
-    document.getElementById(id).addEventListener('click', (e) => {
-        variable = !variable;
-    });
-};
+// Toggle trous
+document.getElementById('trous').addEventListener('click', (e) => {
+    ajouterTrous = true;
+    ajouterHeatSource = false;
+    console.log(ajouterTrous, ajouterHeatSource);
+});
+// Toggle heat source
+document.getElementById('source').addEventListener('click', (e) => {
+    ajouterHeatSource = true;
+    ajouterTrous = false;
+    console.log(ajouterTrous, ajouterHeatSource);
+});
+// Toggle rien
+document.getElementById('rien').addEventListener('click', (e) => {
+    ajouterHeatSource = false;
+    ajouterTrous = false;
+    console.log(ajouterTrous, ajouterHeatSource);
+});
 
 renderer.domElement.addEventListener('click', (e) => {
     let mousePos = getMatrixPosFromMousePos(e);
-    console.log(mousePos);
-    tempMatrix[mousePos[0]][mousePos[1]] = -1;
+    if (ajouterHeatSource) {
+        createHeatSource(mousePos[0], mousePos[1], HEAT_SOURCE_POWER);
+    }
 });
 
 renderer.domElement.addEventListener('mousedown', (e) => {
@@ -200,12 +214,13 @@ renderer.domElement.addEventListener('mouseup', (e) => {
 
 renderer.domElement.addEventListener('mousemove', (e) => {
     if (dragging) {
-        createHole(e);
+        if (ajouterTrous) {
+            createHole(e);
+        } /*else if (!ajouterHeatSource) {
+
+        }*/
     }
 });
-
-// Toggle trous
-toggleVarFromButton(enTrainDajouterDesTrous, 'trou');
 
 // Start update loop
 update();
