@@ -33,7 +33,7 @@
                 type="button"
                 class="btn btn-primary"
                 data-bs-toggle="modal"
-                data-bs-target="#modal">?</button>
+                data-bs-target="#modalInfo">?</button>
         </div>
 
 
@@ -146,7 +146,7 @@
             <div class="modal-dialog modal-lg">
                 <div class="modal-content bg-dark text-white">
                     <div class="modal-header">
-                        <h5 class="modal-title">Heat distribution simulator</h5>
+                        <h2 class="modal-title">Heat distribution simulator</h2>
                         <button
                             type="button"
                             class="btn-close"
@@ -156,30 +156,38 @@
                     </div>
                     <div class="modal-body">
                         <p>
-                            This program is a simulation of heat diffusion.<br>
-                            It also simulate the apparitons of cracks in the material due to weaknesses.<br><br>
+                            <h5><strong>Description</strong></h5>
+                            This program is a simulation of heat diffusion. It also simulate the apparitons of <u>cracks</u> in the material due to <u>weaknesses</u>.<br><br>
 
-                            In this simulation, weaknesses act as heat sinks.<br>
-                            Cracks propagate to the closest weakness or edge.<br><br>
+                            In this simulation, <u>weaknesses</u> act as heat sinks. They are represented as <u>black</u> pixels<br>
+                            <u>Cracks</u> propagate to the closest <u>weakness</u> or edge. They are represented as <u>gray</u> pixels<br><br>
 
-                            In this simulation, weaknesses are represented by the color black, and cracks are represented by the color grey.<br>
                             The temperature of the surface is represented by the chart on the right.<br><br>
 
-                            Move heat source:<br>
-                                *&emsp;Allows you to drag the heat sources around.<br>
-                                *&emsp;When "Allow heat fracture" is disabled, double click can manually start a crack.<br>
-                            Add weakness:<br>
-                                *&emsp;On click, adds a weakness. You can also drag to create multiple weaknesses.<br>
-                            Add heat source:<br>
-                                *&emsp;On click, adds a heat sources. You can also drag to create multiple sources.<br>
-                                *&emsp;You can also choose the heat of the source with the slider.<br>
-                            Map:<br>
-                                *&emsp;Choose among the different surfaces to experiment with.<br>
-                            Material:<br>
-                                *&emsp;Choose the material of what the surface is made.<br>
-                                *&emsp;Different materials have different levels of resistance to heat.<br>
-                            Allow heat fracturation:<br>
-                                *&emsp;When enabled, allows high heat to create weaknesses and cracks in the surface.<br>
+                            <h5><strong>Move heat source</strong></h5>
+
+                            <ul>
+                                <li>Allows you to drag the heat sources around.</li>
+                                <li>When "Allow heat fracture" is disabled, double click can manually start a crack.</li>
+                            </ul>
+
+                            <h5><strong>Add weakness</strong></h5>
+                            <ul>
+                                <li>On click, adds a weakness. You can also drag to create multiple weaknesses.</li>
+                            </ul>
+
+                            <h5><strong>Add heat source</strong></h5>
+                            <ul>
+                                <li>On click, adds a heat sources. You can also drag to create multiple sources.</li>
+                                <li>You can also choose the heat of the source with the slider.</li>
+                            </ul>
+
+                            <h5><strong>Allow heat fracturation</strong></h5>
+                            <ul>
+                                <li>Different materials have different levels of resistance to heat.</li>
+                                <li>When enabled, allows high heat to create weaknesses and cracks in the surface.</li>
+                            </ul>
+                        
                         </p>
                     </div>
                     <div class="modal-footer">
