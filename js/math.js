@@ -68,7 +68,8 @@ function initMatrix(matrixSize, delta, diffusionCoeff) {
     yLength = matrixSize;
 
     //create empty matrix
-    var bigTestArray = math.zeros([matrixSize, matrixSize]);
+    var bigTestArray = getAmogus();
+    console.log(bigTestArray);
 
     //border generation
     for (let i = 0; i < matrixSize; i++) {
