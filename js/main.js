@@ -1,5 +1,5 @@
 const FPS = 60;
-const HEIGHT = window.innerHeight * 0.75;
+const HEIGHT = window.innerHeight * 0.62;
 const WIDTH = HEIGHT;
 const MAX_HEAT_SOURCE_POWER = 5000;
 const HEAT_SOURCE_RADIUS = 5;
@@ -307,7 +307,7 @@ renderer.domElement.addEventListener('mouseup', (e) => {
 });
 
 renderer.domElement.addEventListener('dblclick', (e) => {
-    if (!ajouterHeatSource && !ajouterTrous) {
+    if (!ajouterHeatSource && !ajouterTrous && !heatFracturationOn) {
         let pos = getMatrixPosFromMousePos(e);
         path = [];
         pathfinding(tempMatrix, [pos[0], pos[1]]);

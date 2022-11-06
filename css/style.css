@@ -3,7 +3,7 @@ body {
     padding: 0;
     width: 100%;
     height: 100%;
-    background-color: black !important;
+    background-color: rgb(29, 29, 29) !important;
     position: relative;
 }
 
@@ -18,8 +18,6 @@ canvas {
     background-color: rgb(63, 63, 63);
     margin: 10px;
     padding: 10px;
-    /* width: 50%; */
-    /* transform: translate(50%, 0); */
 }
 
 .menuwu {
@@ -27,18 +25,14 @@ canvas {
     background-color: rgb(63, 63, 63);
     margin: 10px;
     padding: 10px;
-    /* width: 50%; */
-    /* transform: translate(50%, 0); */
 }
 
 .btn-style {
-    width: 20px;
     margin: 3px;
 }
 
 .select-style {
-    width: 300px !important;
-    margin: 3px;
+    font-size: 12px !important;
 }
 
 .row-width {
@@ -48,8 +42,8 @@ canvas {
 
 .white-icon {
     filter: invert(100%) sepia(51%) saturate(1%) hue-rotate(333deg) brightness(107%) contrast(101%);
-    width: 36px;
-    height: 36px;
+    width: 16px;
+    height: 16px;
 }
 
 #simulation-info-content {
@@ -66,8 +60,8 @@ canvas {
 }
 
 .square {
-    scale: 2;
-    transform: translate(35%, 0);
+    scale: 1.5;
+    transform: translate(30%, 0);
 }
 
 
@@ -78,7 +72,7 @@ canvas {
     top: 0;
     right: 0;
     width: 4em;
-    height: 75vh;
+    height: 62vh;
     text-align: center;
 }
 
@@ -121,4 +115,7 @@ canvas {
 
 #pain {
     margin: 0;
+}
+.row-width > label {
+    font-size: 12px !important;
 }
