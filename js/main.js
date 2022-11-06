@@ -89,9 +89,9 @@ var update = function () {
         let temperatureAvg = computeTempMatrixAvg(tempMatrix);
         document.getElementById('simulation-info-content').innerHTML =
             'Avg temp.: ' +
-            temperatureAvg.toFixed(2) +
+            numberWithCommas(temperatureAvg.toFixed(2)) +
             ' K - Time elapsed: ' +
-            timeElapsedMs.toFixed(2) +
+            numberWithCommas(timeElapsedMs.toFixed(2)) +
             ' ms';
 
         render();
@@ -211,6 +211,10 @@ function computeTempMatrixAvg(tempMatrix) {
     }
 
     return sum / count;
+}
+
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',');
 }
 
 // EVENTS
