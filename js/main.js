@@ -13,14 +13,16 @@ let mouse = new THREE.Vector2();
 
 // Ajout de trous actif
 let ajouterHeatSource = false;
-let ajouterTrous = true;
+let ajouterTrous = false;
 let dragging = false;
+let target;
 
 // Initialize temperature matrix
 let tempMatrix = initMatrix();
 let size = math.size(tempMatrix);
 
 // Heat source
+let heatSliderValue = 0;
 let heatSources = [];
 let geometryHeatSource = new THREE.CircleGeometry(HEAT_SOURCE_RADIUS);
 let materialHeatSource = new THREE.MeshBasicMaterial({ color: 0xffff00 });
@@ -64,12 +66,32 @@ var update = function () {
 };
 
 function mapTempToColor(temp) {
-    if (temp < 0) return [0, 0, 0];
-    else if (temp < 10) return [7, 42, 108];
-    else if (temp < 100) return [43, 106, 224];
-    else if (temp < 150) return [239, 247, 82];
-    else if (temp < 200) return [247, 170, 54];
-    else if (temp >= 200) return [255, 0, 0];
+    const gradient = [
+        [0, 192, 247],
+        [28, 182, 255],
+        [88, 168, 255],
+        [141, 150, 255],
+        [189, 127, 250],
+        [228, 97, 220],
+        [255, 57, 180],
+        [255, 0, 130],
+        [255, 0, 77],
+        [255, 5, 5],
+    ];
+
+    const minHeat = 0;
+    let maxHeat = 0.8 * getHottestSourceHeat();
+
+    if (temp < minHeat) return [0, 0, 0];
+
+    let minIndex = 0;
+    let maxIndex = gradient.length - 1;
+
+    const m = (maxIndex - minIndex) / (maxHeat - minHeat);
+    let index = Math.floor(m * temp);
+    if (index > maxIndex) index = maxIndex;
+
+    return gradient[index];
 }
 
 function convertTemperatureMatrixToTexture(tempMatrix) {
@@ -101,6 +123,7 @@ function createHole(e) {
     tempMatrix[pos[0]][pos[1] + 1] = -1;
     tempMatrix[pos[0] - 1][pos[1]] = -1;
     tempMatrix[pos[0]][pos[1] - 1] = -1;
+    ////////////////////////
     tempMatrix[pos[0] + 1][pos[1] + 1] = -1;
     tempMatrix[pos[0] + 1][pos[1] - 1] = -1;
     tempMatrix[pos[0] - 1][pos[1] + 1] = -1;
@@ -117,11 +140,11 @@ function createHeatSource(i, j, heat) {
 
     console.log(circle.position);
 
-    heatSources.push({
-        i: i,
-        j: j,
-        heat: heat,
-    });
+    circle.i = i;
+    circle.j = j;
+    circle.heat = heat;
+
+    heatSources.push(circle);
 
     return circle;
 }
@@ -145,25 +168,37 @@ function getMatrixPosFromMousePos(e) {
     return [Math.floor(y / stretchY), Math.floor(x / stretchX)];
 }
 
+function getHottestSourceHeat() {
+    let max = 0;
+    for (let i = 0; i < heatSources.length; i++) {
+        if (heatSources[i].heat > max) {
+            max = heatSources[i].heat;
+        }
+    }
+
+    return max;
+}
+
 // EVENTS
 
+document.getElementById('slider').disabled = true;
 // Toggle trous
 document.getElementById('trous').addEventListener('click', (e) => {
     ajouterTrous = true;
     ajouterHeatSource = false;
-    console.log(ajouterTrous, ajouterHeatSource);
+    document.getElementById('slider').disabled = true;
 });
 // Toggle heat source
 document.getElementById('source').addEventListener('click', (e) => {
     ajouterHeatSource = true;
     ajouterTrous = false;
-    console.log(ajouterTrous, ajouterHeatSource);
+    document.getElementById('slider').disabled = false;
 });
 // Toggle rien
 document.getElementById('rien').addEventListener('click', (e) => {
     ajouterHeatSource = false;
     ajouterTrous = false;
-    console.log(ajouterTrous, ajouterHeatSource);
+    document.getElementById('slider').disabled = true;
 });
 
 renderer.domElement.addEventListener('click', (e) => {
@@ -175,6 +210,21 @@ renderer.domElement.addEventListener('click', (e) => {
 
 renderer.domElement.addEventListener('mousedown', (e) => {
     dragging = true;
+
+    //identify close heat source
+    if (!ajouterHeatSource && !ajouterTrous) {
+        let pos = getMatrixPosFromMousePos(e);
+        let pos2 = getWorldPosFromMatrixPos(pos[0], pos[1]);
+        let mousePos = new THREE.Vector2(pos2[0], pos2[1]);
+        for (i = 0; i < heatSources.length; i++) {
+            console.log(pos2[0], pos2[1], heatSources[i].position);
+            let heatPoint = new THREE.Vector2(heatSources[i].position.x, heatSources[i].position.y);
+            if (mousePos.distanceTo(heatPoint) < HEAT_SOURCE_RADIUS) {
+                target = heatSources[i];
+                break;
+            } else target = null;
+        }
+    }
 });
 
 renderer.domElement.addEventListener('mouseup', (e) => {
@@ -185,11 +235,21 @@ renderer.domElement.addEventListener('mousemove', (e) => {
     if (dragging) {
         if (ajouterTrous) {
             createHole(e);
-        } /*else if (!ajouterHeatSource) {
-
-        }*/
+        } else if (!ajouterHeatSource) {
+            if (target) {
+                let pos = getMatrixPosFromMousePos(e);
+                let pos2 = getWorldPosFromMatrixPos(pos[0], pos[1]);
+                target.position.x = pos2[0] + HEAT_SOURCE_RADIUS / 2;
+                target.position.y = pos2[1] - HEAT_SOURCE_RADIUS / 2;
+                target.i = pos[0];
+                target.j = pos[1];
+            }
+        }
     }
 });
 
+document.getElementById('slider').addEventListener('change', (e) => {
+    heatSliderValue = e.target.value;
+});
 // Start update loop
 update();
