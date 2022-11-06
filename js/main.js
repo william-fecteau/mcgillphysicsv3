@@ -27,8 +27,6 @@ let heatSources = [];
 let geometryHeatSource = new THREE.CircleGeometry(HEAT_SOURCE_RADIUS);
 let materialHeatSource = new THREE.MeshBasicMaterial({ color: 0xffff00 });
 createHeatSource(50, 50, MAX_HEAT_SOURCE_POWER);
-createHeatSource(5, 5, MAX_HEAT_SOURCE_POWER);
-createHeatSource(80, 5, 500);
 
 // Setting up threejs
 let element = document.body.getElementsByClassName('three-js');

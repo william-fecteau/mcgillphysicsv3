@@ -80,8 +80,8 @@ function initMatrix(matrixSize, delta, diffusionCoeff) {
     //create empty matrix
     // var bigTestArray = getAmogus();
     // var bigTestArray = getDonut();
-    // var bigTestArray = getH();
-    var bigTestArray = getMonke();
+    var bigTestArray = getH();
+    // var bigTestArray = getMonke();
     // var bigTestArray = getTrollface();
 
     //border generation
