@@ -52,7 +52,7 @@ canvas {
 }
 
 #simulation-info-content {
-    background-color: rgba(0, 0, 0, .5);
+    background-color: rgba(0, 0, 0, 0.5);
     width: 28em;
     color: white;
     padding: 5px;
@@ -62,4 +62,9 @@ canvas {
 
 #flow-control button {
     margin: 0.2em;
+}
+
+.square {
+    scale: 2;
+    transform: translate(35%, 0);
 }
