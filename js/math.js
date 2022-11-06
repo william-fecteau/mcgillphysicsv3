@@ -68,7 +68,11 @@ function initMatrix(matrixSize, delta, diffusionCoeff) {
     yLength = matrixSize;
 
     //create empty matrix
-    var bigTestArray = math.zeros([matrixSize, matrixSize]);
+    // var bigTestArray = getAmogus();
+    // var bigTestArray = getDonut();
+    // var bigTestArray = getH();
+    var bigTestArray = getMonke();
+    // var bigTestArray = getTrollface();
 
     //border generation
     for (let i = 0; i < matrixSize; i++) {
