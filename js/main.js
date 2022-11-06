@@ -13,7 +13,7 @@ let mouse = new THREE.Vector2();
 
 // Ajout de trous actif
 let ajouterHeatSource = false;
-let ajouterTrous = false;
+let ajouterTrous = true;
 let dragging = false;
 
 // Initialize temperature matrix
@@ -168,8 +168,9 @@ document.getElementById('rien').addEventListener('click', (e) => {
 
 renderer.domElement.addEventListener('click', (e) => {
     let mousePos = getMatrixPosFromMousePos(e);
-    console.log(mousePos);
-    tempMatrix[mousePos[0]][mousePos[1]] = -1;
+    if (ajouterHeatSource) {
+        createHeatSource(mousePos[0], mousePos[1], HEAT_SOURCE_POWER);
+    }
 });
 
 renderer.domElement.addEventListener('mousedown', (e) => {
@@ -182,7 +183,11 @@ renderer.domElement.addEventListener('mouseup', (e) => {
 
 renderer.domElement.addEventListener('mousemove', (e) => {
     if (dragging) {
-        createHole(e);
+        if (ajouterTrous) {
+            createHole(e);
+        } /*else if (!ajouterHeatSource) {
+
+        }*/
     }
 });
 
