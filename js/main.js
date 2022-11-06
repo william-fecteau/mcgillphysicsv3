@@ -343,7 +343,8 @@ renderer.domElement.addEventListener('mousemove', (e) => {
 
 document.getElementById('temp-slider-feedback').innerHTML =
     numberWithCommas(((heatSliderValue * MAX_HEAT_SOURCE_POWER) / 100).toFixed(2)) + ' K';
-document.getElementById('slider').addEventListener('change', (e) => {
+
+document.getElementById('slider').addEventListener('input', (e) => {
     heatSliderValue = Number(e.target.value);
     document.getElementById('temp-slider-feedback').innerHTML =
         numberWithCommas(((heatSliderValue * MAX_HEAT_SOURCE_POWER) / 100).toFixed(2)) + ' K';
