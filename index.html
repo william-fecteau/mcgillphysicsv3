@@ -30,23 +30,18 @@
     <body>
         <div class="three-js">
             <div class="three-js-renderer"></div>
-            <div id="simulation-info" class="d-flex justify-content-center"><p id="simulation-info-content"><p></div>
-                <div id="flow-control" class="d-flex justify-content-center">
-                    <button
-                        type="button"
-                        onclick="onPlayPauseClicked()"
-                        class="btn btn-dark d-block"
-                    >
-                        <img id="play-pause" src="./assets/pause.svg" class="white-icon" />
-                    </button>
-                    <button
-                        type="button"
-                        onclick="onRestartClicked()"
-                        class="btn btn-dark d-block"
-                    >
-                        <img src="./assets/restart.svg" class="white-icon" />
-                    </button>
-                </div>
+            <div id="simulation-info" class="d-flex justify-content-center">
+                <p id="simulation-info-content"></p>
+                <p></p>
+            </div>
+            <div id="flow-control" class="d-flex justify-content-center">
+                <button type="button" onclick="onPlayPauseClicked()" class="btn btn-dark d-block">
+                    <img id="play-pause" src="./assets/pause.svg" class="white-icon" />
+                </button>
+                <button type="button" onclick="onRestartClicked()" class="btn btn-dark d-block">
+                    <img src="./assets/restart.svg" class="white-icon" />
+                </button>
+            </div>
         </div>
 
         <div class="menuwu col">
@@ -85,6 +80,7 @@
                     >Puissance source</label
                 >
                 <input type="range" class="form-range col align-self-center" id="slider" />
+                <label id="temp-slider-feedback" class="col-2 text-white align-middle"></label>
             </div>
             <div class="row row-width my-2">
                 <label class="col-2 text-white align-self-center">Map</label>
